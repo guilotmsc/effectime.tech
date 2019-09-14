@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190907150838) do
+ActiveRecord::Schema.define(version: 20190914130222) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,6 +39,11 @@ ActiveRecord::Schema.define(version: 20190907150838) do
     t.datetime "updated_at", null: false
     t.bigint "corporation_id"
     t.index ["corporation_id"], name: "index_areas_on_corporation_id"
+  end
+
+  create_table "clients", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "contracts", force: :cascade do |t|
@@ -70,6 +75,8 @@ ActiveRecord::Schema.define(version: 20190907150838) do
     t.integer "maturity_day"
     t.decimal "total"
     t.decimal "recurring_amount_ticket"
+    t.decimal "overplus_ticket_amout"
+    t.decimal "extra_hour_amount"
     t.index ["corporation_id"], name: "index_contracts_on_corporation_id"
   end
 
@@ -154,6 +161,7 @@ ActiveRecord::Schema.define(version: 20190907150838) do
     t.string "type_project"
     t.bigint "area_id"
     t.bigint "corporation_id"
+    t.string "code"
     t.index ["area_id"], name: "index_projects_on_area_id"
     t.index ["contract_id"], name: "index_projects_on_contract_id"
     t.index ["corporation_id"], name: "index_projects_on_corporation_id"

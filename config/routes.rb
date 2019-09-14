@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :clients
   resources :hours
   resources :corporation_types
   resources :corporation_users

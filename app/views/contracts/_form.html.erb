@@ -220,7 +220,7 @@
             <div class="form-group clearfix">
               <label class="col-lg-2 control-label">TOTAL DO CONTRATO *</label>
               <div class="col-lg-10">
-                <input type="text" name="" id="contract_total" data-a-sep="." data-a-dec="," placeholder="Total do contrato" class="form-control autonumber" disabled="">
+                <%= form.text_field :total, id: :contract_total, class: "form-control autonumber", placeholder: "Total do contrato", :data => { "a-sep" => '', "a-dec" => "," } %>
               </div>
             </div>
             <div id="pag_tres_produtos">
@@ -256,6 +256,18 @@
             <p>Assinatura</p>
             <!-- <p>valor to ticket * volume de ticket recorrente (R$)</p> -->
             <div id="pag_tres_assinaturas">
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label">VALOR DA HORA EXTRA</label>
+                <div class="col-lg-10">
+                  <%= form.text_field :extra_hour_amount, id: :contract_extra_hour_amount, class: "form-control autonumber", placeholder: "Valor da hora extra", :data => { "a-sep" => '', "a-dec" => "," } %>
+                </div>
+              </div>
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label">VALOR DO TICKET EXCEDENTE *</label>
+                <div class="col-lg-10">
+                  <%= form.text_field :overplus_ticket_amout, id: :contract_overplus_ticket_amout, class: "form-control autonumber", placeholder: "Valor do ticket excedente", :data => { "a-sep" => '', "a-dec" => "," } %>
+                </div>
+              </div>
               <div class="form-group clearfix">
                 <label class="col-lg-2 control-label">TOTAL DO CONTRATO RECORRENTE *</label>
                 <div class="col-lg-10">
@@ -310,7 +322,7 @@
         let totalContract = $("#contract_total").val();
         
         if (parseInt(totalContract) >= 0) {
-          let result = (parseFloat(totalContract) / parseInt($("#contract_hours_volume").val())) * 1000;
+          let result = (parseFloat(totalContract) / parseInt($("#contract_hours_volume").val()));
 
           $("#contract_amount_ticket").val(result.toFixed(2).replace('.', ','));
         } else {
@@ -619,7 +631,7 @@
       $("#pag_dois_assinaturas_sec_um :input").attr("disabled", false);
       $("#pag_dois_assinaturas_sec_dois :input").attr("disabled", false);
       $("#pag_dois_assinaturas_sec_tres :input").attr("disabled", false);
-      $("#pag_tres_produtos :input").attr("disabled", true);
+      $("#pag_tres_produtos :input").attr("disabled", false);
       $("#pag_tres_assinaturas :input").attr("disabled", false);
 
 
@@ -627,7 +639,7 @@
       $("#pag_dois_assinaturas_sec_um :input").attr("required", true);
       $("#pag_dois_assinaturas_sec_dois :input").attr("required", true);
       $("#pag_dois_assinaturas_sec_tres :input").attr("required", true);
-      $("#pag_tres_produtos :input").attr("required", false);
+      $("#pag_tres_produtos :input").attr("required", true);
       $("#pag_tres_assinaturas :input").attr("required", true);
 
 

@@ -5,6 +5,9 @@ class AppointmentsController < ApplicationController
     # require 'csv'
 
     @appointments = Appointment.find_by_sql("select 
+                                              p.project_id,
+                                              p.contract_id,
+                                              p.process_dept_id,
                                               c.name as corporacao,
                                               co.name as contrato,
                                               pj.name as projeto,
@@ -14,8 +17,8 @@ class AppointmentsController < ApplicationController
                                               TO_CHAR(start_moment, 'dd/mm/yyyy') as date,
                                               TO_CHAR(start_moment, 'HH24:mi') as inicio,
                                               TO_CHAR(end_moment, 'HH24:mi') as termino  
-                                            from appointments p 
-                                            inner join users u on u.id = p.user_id
+                                            from appointments p
+                                            inner join users u on u.id = #{User.current.id}
                                             left outer join process_depts pd on pd.id = p.process_dept_id
                                             left outer join projects pj on pj.id = p.project_id
                                             left outer join areas a on a.id = pd.area_id

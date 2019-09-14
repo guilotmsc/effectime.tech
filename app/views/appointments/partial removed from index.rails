@@ -1,0 +1,23 @@
+<div class="row" style="margin-left: 1%">
+  <div class="col-lg-2"></div>
+  <div class="col-lg-8">
+    <div class="row">
+      <h4>Contratos</h4>
+      <div class="widget">
+        <div class="widget-body">
+          <div class="row">
+            <% @contracts.each do |contract| %>
+              <div id="external-events" class="m-t-20">
+                <div class="col-md-3 col-sm-3 col-xs-3">
+                  <div class="external-event bg-primary" data-class="bg-primary" style="text-align: center; position: relative;" data-code="<%= contract.id %>" data-name="<%= contract.name %>" data-object="contract">
+                    <i class="fa fa-move"></i><%= contract.name %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -34,7 +34,7 @@ class ProjectsController < ApplicationController
   # GET /projects.json
   def index
     @projects = Project.where("corporation_id in (select corporation_id from corporation_users where user_id = #{User.current.id})")
-    @corporations = Corporation.where(corporation_type_id: 2).count(:id)
+    @corporations = Corporation.where("corporation_type_id = 2 and id in (select corporation_id from corporation_users where user_id = #{User.current.id})").count(:id)
   end
 
   # GET /projects/1
@@ -100,6 +100,6 @@ class ProjectsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def project_params
       params.require(:project).permit(:name, :contract_id, :corporation_id, :type_project, :area_id, :sponsor, :manager, :objective, 
-                                      :start_date, :end_date, :estimate, :obs, :associate, user_ids:[])
+                                      :start_date, :end_date, :estimate, :obs, :associate, :code, user_ids:[])
     end
 end
