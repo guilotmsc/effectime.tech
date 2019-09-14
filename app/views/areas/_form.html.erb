@@ -1,0 +1,110 @@
+<div class="row">
+  <div class="col-sm-3"></div>
+  <div class="col-sm-6">
+    <ol class="breadcrumb">
+      <li>
+        <%= link_to root_path do %>Início<% end %>
+      </li>
+      <li>
+        <%= link_to areas_path do %>Áreas<% end %>
+      </li>
+      <li class="active">
+        Novo
+      </li>
+    </ol>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-3"></div>
+  <div class="col-sm-6">
+    <div class="card-box">
+      <div class="row">
+        <%= form_with(model: area, local: true) do |form| %>
+          <% if flash[:notice].present? %>
+            <div class="alert alert-danger" id="danger-alert">
+              <button type="button" class="close" data-dismiss="alert">x</button>
+              <strong>Erro! </strong>
+              O nome da área deve ser inserido
+            </div>
+          <% end %>
+          <div class="p-20">
+            <div class="form-group">
+              <h4 class="m-t-0 header-title" style="text-align:center;"><b>CADASTRO DE ÁREAS</b></h4>
+              <br>
+              <span>NOME</span>
+              <%= form.text_field :name, id: :area_name, class: "form-control", required: true, placeholder: "Nome" %>
+              <br>
+            </div>
+            <h4 class="m-t-0 header-title" style="text-align:center;"><b>PROCESSOS</b></h4>
+            <div class="col-md-11"> 
+              <div class="form-group">  
+                <input type="text" placeholder="" class="form-control" name="process[]" />
+              </div>
+            </div>
+            <div class="col-md-1">
+                <button type="button" class="btn btn-default addButton"><i class="fa fa-plus"></i></button>
+            </div>
+            <div class="form-group hide" id="optionTemplate"> 
+              <div class="col-md-11"> 
+                <div class="form-group">  
+                  <input class="form-control" type="text" name="process[]" />
+                </div>
+              </div>
+              <div class="col-md-1">
+                <button type="button" class="btn btn-default removeButton"><i class="fa fa-minus"></i></button>
+              </div>
+            </div> 
+            <br><br><br><br>
+            <div class="form-group" style="text-align:left;">
+              <%= link_to areas_path, class: "btn btn-white waves-effect waves-light" do %>
+                Voltar
+              <% end %> 
+              <button type="submit" class="btn btn-default waves-effect waves-light">Salvar</button>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready (function(){
+    $("#danger-alert-alert").hide();
+
+    $("#danger-alert").fadeTo(2000, 500).slideUp(500, function(){
+      $("#alert-alert").slideUp(500);
+      $("#danger-alert-alert").hide();
+    });
+
+    $('#form').on('click', '.addButton', function() {
+      var $template = $('#optionTemplate'),
+      $clone    = $template
+                      .clone()
+                      .removeClass('hide')
+                      .removeAttr('id')
+                      .insertBefore($template),
+      $option   = $clone.find('[name="process[]"]');
+
+    })
+
+    // Remove button click handler
+    .on('click', '.removeButton', function() {
+
+      var $row = $(this).parents('.form-group'),
+      $option = $row.find('[name="process[]"]');
+
+      // Remove element containing the option
+      $row.remove();
+    })
+
+    // Called after adding new field
+    .on('added.field.fv', function(e, data) { 
+      if (data.field === 'process[]') {
+        $('#form').find('.addButtonn').attr('disabled', 'disabled');
+      } 
+    })
+
+  });
+</script>

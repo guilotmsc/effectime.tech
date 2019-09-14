@@ -1,0 +1,27 @@
+/*
+
+	*= require bootstrap-datepicker/dist/css/bootstrap-datepicker.min
+  *= require timepicker/bootstrap-timepicker.min
+
+  *= require fullcalendar/dist/fullcalendar
+	*= require bootstrap-table/dist/bootstrap-table.min
+  *= require sweetalert/dist/sweetalert
+  *= require select2/select2
+  *= require datatables/jquery.dataTables.min
+  *= require bootstrap-select/dist/css/bootstrap-select.min
+  *= require custombox/dist/custombox.min
+  *= require jquery.steps/demo/css/jquery.steps
+  *= require x-editable/dist/bootstrap3-editable/css/bootstrap-editable
+  *= require sweetalert/dist/sweetalert
+
+  *= require morris/morris
+
+  *= require bootstrap.min
+	*= require core
+  *= require components
+  *= require icons
+  *= require pages
+  *= require responsive 
+
+ */
+

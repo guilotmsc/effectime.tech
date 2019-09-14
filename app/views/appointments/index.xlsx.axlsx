@@ -1,0 +1,24 @@
+
+wb = xlsx_package.workbook
+
+wb.styles do |style|
+  project_heading = style.add_style(b: true, sz: 14)
+  heading = style.add_style(b: true)
+
+  wb.add_worksheet(name: "resultado-horas") do |sheet|
+    # Add a title row
+    sheet.add_row ["Controle de horas"], style: project_heading
+    
+
+    sheet.add_row ["Gerado em:", Time.now.strftime("%b %-d, %Y %H:%M:%S")]
+    
+
+    sheet.add_row []
+    
+    sheet.add_row ["Unidade de negócio", "Setor", "Processo", "Contrato", "Projeto", "Nome do colaborador", "Data", "Hora de entrada", "Hora de saída", "Saldo de horas"], style: heading
+    
+    @appExport.each do |ap|
+	    sheet.add_row [ap.empresa, ap.area, ap.processo, ap.contrato, ap.projeto, ap.usuario, ap.date, ap.inicio, ap.termino, 0]
+	  end
+  end
+end

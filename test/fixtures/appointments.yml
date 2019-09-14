@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  employee: one
+  contract: one
+  project: one
+  start: 2018-11-28
+  end: 2018-11-28
+  canceled: false
+  description: MyText
+
+two:
+  employee: two
+  contract: two
+  project: two
+  start: 2018-11-28
+  end: 2018-11-28
+  canceled: false
+  description: MyText

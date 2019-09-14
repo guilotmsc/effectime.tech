@@ -1,0 +1,69 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Employee:</strong>
+  <%= @contract.employee %>
+</p>
+
+<p>
+  <strong>Client:</strong>
+  <%= @contract.client %>
+</p>
+
+<p>
+  <strong>Trading name:</strong>
+  <%= @contract.trading_name %>
+</p>
+
+<p>
+  <strong>Signature date:</strong>
+  <%= @contract.signature_date %>
+</p>
+
+<p>
+  <strong>Amount:</strong>
+  <%= @contract.amount %>
+</p>
+
+<p>
+  <strong>Amount ticket:</strong>
+  <%= @contract.amount_ticket %>
+</p>
+
+<p>
+  <strong>Date closing hours:</strong>
+  <%= @contract.date_closing_hours %>
+</p>
+
+<p>
+  <strong>Payday:</strong>
+  <%= @contract.payday %>
+</p>
+
+<p>
+  <strong>Email:</strong>
+  <%= @contract.email %>
+</p>
+
+<p>
+  <strong>Phone:</strong>
+  <%= @contract.phone %>
+</p>
+
+<p>
+  <strong>Hours volume:</strong>
+  <%= @contract.hours_volume %>
+</p>
+
+<p>
+  <strong>Attribuition model:</strong>
+  <%= @contract.attribuition_model %>
+</p>
+
+<p>
+  <strong>Tolerance:</strong>
+  <%= @contract.tolerance %>
+</p>
+
+<%= link_to 'Edit', edit_contract_path(@contract) %> |
+<%= link_to 'Back', contracts_path %>

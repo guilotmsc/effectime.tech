@@ -1,0 +1,258 @@
+<div class="row">
+  <div class="col-sm-3"></div>
+  <div class="col-sm-6">
+    <ol class="breadcrumb">
+      <li>
+        <%= link_to root_path do %>Início<% end %>
+      </li>
+      <li class="active">
+        <%= link_to projects_path do %>Projetos<% end %>
+      </li>
+      <li class="active">
+        Novo
+      </li>
+    </ol>
+  </div>
+</div>
+
+  <div class="row">
+    <div class="col-sm-3"></div>
+    <div class="col-sm-6">
+      <div class="card-box">
+        <div class="row">
+          <%= form_with(model: project, local: true) do |form| %>
+            <% if project.errors.any? %>
+              <div class="alert alert-danger" id="danger-alert">
+                <button type="button" class="close" data-dismiss="alert">x</button>
+                <strong>Erro! </strong>
+                Por favor, preencha todos os campos obrigatórios
+              </div>
+            <% end %>
+            
+            <div class="p-20"> 
+              <h4 class="m-t-0 header-title" style="text-align:center;"><b>INFORMAÇÕES DO PROJETO</b></h4>
+              <br> 
+              <div class="form-group">
+                <span>NOME</span>
+                <%= form.text_field :name, id: :project_name, class: "form-control", placeholder: "Nome", required: true %> 
+              </div>
+              <div class="form-group">
+                <span>TIPO DE PROJETO</span>
+                <%= form.select(:type_project,
+                          [ ['Projetos Internos'],
+                            ['Projetos de Clientes'] ],
+                            {:include_blank => false}, { class: 'form-control' }) %>
+              </div>
+              <div class="form-group">
+                <span>CLIENTE/EMPRESA</span>
+                <%= form.select(:corporation_id, Corporation.all.joins(:corporation_users).where("corporation_users.user_id = #{User.current.id} and corporation_type_id = 2").collect {|u| [u.name, u.id]}, {:prompt=>"Selecione uma empresa", required:true}, {class: "form-control select2"}) %>
+              </div>
+              <div class="form-group" id="content-contract" hidden="true">
+                <span>CONTRATO</span>
+                <%= form.select(:contract_id, Contract.where(id: 2000).collect {|u| [u.name, u.id]}, {:prompt=>"Nenhum cliente selecionado"}, {class: "form-control select2"}) %>
+              </div>
+              <div class="form-group">
+                <span>ÁREA DO CLIENTE ONDE O PROJETO SERÁ EXECUTADO</span>
+                <%= form.select(:area_id, Area.where(id:2020202).collect {|u| [u.name, u.id]}, {:prompt=>"Nenhum cliente/empresa selecionado(a)", required:true}, {class: "form-control select2"}) %>
+              </div>
+              <div class="form-group">
+                <span>PATROCINADOR</span>
+                <%= form.text_field :sponsor, id: :project_sponsor, class: "form-control", required: true, placeholder: "Patrocinador" %> 
+              </div>
+              <div class="form-group">
+                <span>GERENTE DE PROJETOS</span>
+                <%= form.text_field :manager, id: :project_manager, class: "form-control", required: true, placeholder: "Gerente de projetos" %> 
+              </div>
+              <div class="form-group">
+                <span>OBJETIVOS</span>
+                <%= form.text_field :objective, id: :project_objective, class: "form-control", required: true, placeholder: "Objetivos" %> 
+              </div>
+              <div class="row">
+                <div class="col-md-5">
+                  <div class="form-group">
+                    <span>INÍCIO</span>
+                    <div class="input-group">
+                      <%= form.text_field :start_date, id: :project_start_date, :class => "form-control", :placeholder => "dd/mm/yyyy", required: true, 'data-mask': "99/99/9999" %>
+                      <span class="input-group-addon bg-custom b-0 text-white"><i class="icon-calender"></i></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                </div>
+                <div class="col-md-5">
+                  <div class="form-group">
+                    <span>TÉRMINO</span>
+                    <div class="input-group">
+                      <%= form.text_field :end_date, id: :project_end_date, :class => "form-control", :placeholder => "dd/mm/yyyy", required: true, 'data-mask': "99/99/9999" %>
+                      <span class="input-group-addon bg-custom b-0 text-white"><i class="icon-calender"></i></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <span>ORÇAMENTO</span>
+                <%= form.text_field :estimate, id: :project_estimate, class: "form-control autonumber", placeholder: "Ex: 10.000,00", required: true, :data => { "a-sep" => '', "a-dec" => "," } %> 
+              </div>
+              <div class="form-group">
+                <span>CONSULTOR ASSOCIADO</span>
+                <br>
+                <%= form.collection_check_boxes :user_ids, User.find_by_sql("select users.id, users.email from users 
+                          inner join corporation_users on users.id = corporation_users.user_id
+                          where corporation_id in (select corporation_id from corporation_users where user_id = #{User.current.id})
+                          group by 1"), :id, :email do |b| %>
+                  <%= b.check_box %>
+                  <%= b.label %>
+                <% end %>
+              </div>
+              <div class="form-group">
+                <span>OBSERVAÇÕES</span>
+                <%= form.text_area :obs, id: :project_obs, class: "form-control", placeholder: "Observações" %> 
+                <br>
+              </div>
+
+              <div class="form-group" style="text-align:left;">
+                <%= link_to projects_path, class: "btn btn-white waves-effect waves-light" do %>
+                  Voltar
+                <% end %>
+                <button type="submit" class="btn btn-default waves-effect waves-light">Salvar</button>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script type="text/javascript">
+  jQuery(function($) {
+    $('.autonumber').autoNumeric('init');    
+  });
+
+  $(document).ready (function(){
+    $("#danger-alert-alert").hide();
+
+    $("#danger-alert").fadeTo(2000, 500).slideUp(500, function(){
+      $("#alert-alert").slideUp(500);
+      $("#danger-alert-alert").hide();
+    });
+  
+    jQuery('#project_start_date, #project_end_date').datepicker({
+      autoclose: true,
+      todayHighlight: true,
+      format: "dd/mm/yyyy",
+      language: 'pt-BR'
+    });
+    
+    $("select[name='project[type_project]']").change(function(){
+      $("select[name='project[corporation_id]']")
+      if ($(this).val() == '') {
+        $("select[name='project[corporation_id]'] option").remove();
+        var row = "<option value=\"" + "" + "\">" + "Selecione um cliente" + "</option>";
+        $(row).appendTo("select[name='project[corporation_id]']");
+      } else if ($(this).val() == 'Projetos Internos') {
+        $("#content-contract").hide();
+        $.ajax({
+          dataType: "json",
+          cache: false,
+          url: '/projects/get_corporations/',
+          timeout: 5000,
+          success: function(data) {
+            // Clear all options from course select
+            $("select[name='project[corporation_id]'] option").remove();
+            //put in a empty default line
+            var row = "<option value=\"" + "" + "\">" + "Selecione uma empresa" + "</option>";
+            $(row).appendTo("select[name='project[corporation_id]']");
+            // Fill course select
+            $.each(data, function(i, j) {
+              row = "<option value=\"" + j.id + "\">" + j.name + "</option>";
+              $(row).appendTo("select[name='project[corporation_id]']");
+            });
+          },
+          error: function(XMLHttpRequest, errorTextStatus, error) {
+            alert("Failed to submit : " + errorTextStatus + " ;" + error);
+          }
+        });
+      } else if($(this).val() == 'Projetos de Clientes') {
+        $("#content-contract").show();
+        $.ajax({
+          dataType: "json",
+          cache: false,
+          url: '/projects/get_clients/',
+          timeout: 5000,
+          success: function(data) {
+            // Clear all options from course select
+            $("select[name='project[corporation_id]'] option").remove();
+            //put in a empty default line
+            var row = "<option value=\"" + "" + "\">" + "Selecione um cliente" + "</option>";
+            $(row).appendTo("select[name='project[corporation_id]']");
+            // Fill course select
+            $.each(data, function(i, j) {
+              row = "<option value=\"" + j.id + "\">" + j.name + "</option>";
+              $(row).appendTo("select[name='project[corporation_id]']");
+            });
+          },
+          error: function(XMLHttpRequest, errorTextStatus, error) {
+            alert("Failed to submit : " + errorTextStatus + " ;" + error);
+          }
+        });
+      }
+    });
+
+
+    $("select[name='project[corporation_id]']").change(function(){
+      if ($(this).val() == '') {
+        $("select[name='project[contract_id]'] option").remove();
+        var row = "<option value=\"" + "" + "\">" + "Nenhum cliente selecionado" + "</option>";
+        $(row).appendTo("select[name='project[contract_id]']");
+      } else {
+        $.ajax({
+          dataType: "json",
+          cache: false,
+          url: '/projects/get_contracts_by_client/',
+          data: {
+            client: $(this).val()
+          },
+          timeout: 5000,
+          success: function(data) {
+            $("select[name='project[contract_id]'] option").remove();
+            
+            var row = "<option value=\"" + "" + "\">" + "Selecione um contrato" + "</option>";
+            $(row).appendTo("select[name='project[contract_id]']");
+            
+            $.each(data, function(i, j) {
+              row = "<option value=\"" + j.id + "\">" + j.name + "</option>";
+              $(row).appendTo("select[name='project[contract_id]']");
+            });
+          },
+          error: function(XMLHttpRequest, errorTextStatus, error) {
+            alert("Failed to submit : " + errorTextStatus + " ;" + error);
+          }
+        });
+
+        $.ajax({
+          dataType: "json",
+          cache: false,
+          url: '/projects/get_areas_by_corporation/',
+          data: {
+            client: $(this).val()
+          },
+          timeout: 5000,
+          success: function(data) {
+            $("select[name='project[area_id]'] option").remove();
+            
+            var row = "<option value=\"" + "" + "\">" + "Selecione uma área" + "</option>";
+            $(row).appendTo("select[name='project[area_id]']");
+            
+            $.each(data, function(i, j) {
+              row = "<option value=\"" + j.id + "\">" + j.name + "</option>";
+              $(row).appendTo("select[name='project[area_id]']");
+            });
+          },
+          error: function(XMLHttpRequest, errorTextStatus, error) {
+            alert("Failed to submit : " + errorTextStatus + " ;" + error);
+          }
+        });
+      }
+    });
+  });
+</script>

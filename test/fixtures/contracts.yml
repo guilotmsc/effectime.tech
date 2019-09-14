@@ -1,0 +1,31 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  employee: one
+  client: MyString
+  trading_name: MyString
+  signature_date: 2018-11-27
+  amount: 1.5
+  amount_ticket: 1.5
+  date_closing_hours: 2018-11-27
+  payday: 2018-11-27
+  email: MyString
+  phone: MyString
+  hours_volume: 1
+  attribuition_model: MyString
+  tolerance: 1
+
+two:
+  employee: two
+  client: MyString
+  trading_name: MyString
+  signature_date: 2018-11-27
+  amount: 1.5
+  amount_ticket: 1.5
+  date_closing_hours: 2018-11-27
+  payday: 2018-11-27
+  email: MyString
+  phone: MyString
+  hours_volume: 1
+  attribuition_model: MyString
+  tolerance: 1

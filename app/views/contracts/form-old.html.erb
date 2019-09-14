@@ -1,0 +1,403 @@
+
+<div class="row">
+  <div class="col-sm-12">
+    <h4 class="page-title">Contratos</h4>
+    <ol class="breadcrumb">
+      <li>
+        <%= link_to root_path do %>Início<% end %>
+      </li>
+      <li class="active">
+        <%= link_to contracts_path do %>Contratos<% end %>
+      </li>
+      <li class="active">
+        Novo
+      </li>
+    </ol>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="card-box">
+      <h4 class="m-t-0 header-title"><b>Cadastro de contratos</b></h4>
+      <p class="text-muted m-b-30 font-13">
+        Preencha todas as etapas do formulário
+      </p>
+                  
+      <%= form_with(model: contract, local: true, :html => {id: "basic-form"}) do |form| %>
+        <div class="p-20">
+          <h3>Dados do contrato</h3>
+          <section>
+            <div class="form-group clearfix">
+              <label class="col-lg-2 control-label">CLIENTE *</label>
+              <div class="col-lg-10">
+                <%= form.select(:corporation_id, Corporation.where(corporation_type_id: 1).all.collect {|u| [u.name, u.id]}, {}, {class: "form-control select2"}) %>
+              </div>
+            </div>
+            <div class="form-group clearfix">
+              <label class="col-lg-2 control-label">NOME *</label>
+              <div class="col-lg-10">
+                <%= form.text_field :name, id: :contract_name, class: "form-control", required:true, placeholder: "Nome do contrato" %> 
+              </div>
+            </div>
+            <div class="form-group clearfix">
+              <label class="col-lg-2 control-label">ESCOPO *</label>
+              <div class="col-lg-10">
+                <%= form.text_area :scope, id: :contract_scope, class: "form-control", required:true, placeholder: "Escopo" %> 
+              </div>
+            </div>
+            <div class="form-group clearfix">
+              <label class="col-lg-2 control-label">TIPO DO CONTRATO *</label>
+              <div class="col-lg-10">
+                <%= form.select(:contract_type,
+                        [ ['Escopo aberto'],
+                          ['Produto'],
+                          ['Assinatura'],
+                          ['Misto']],
+                          {:include_blank => false}, { class: 'form-control contract_type' }) %>
+              </div>
+            </div>
+            <div class="form-group clearfix">
+              <label class="col-lg-2 control-label">DATA DE ASSINATURA DO CONTRATO *</label>
+              <div class="col-lg-10">
+                <%= form.text_field :signature_date, id: :contract_signature_date, :class => "form-control", required:true, :placeholder => "dd/mm/yyyy", required: true, 'data-mask': "99/99/9999" %>
+                    <span class="input-group-addon bg-custom b-0 text-white"><i class="icon-calender"></i></span>
+              </div>
+            </div>
+          </section>
+
+          <h3>Controle de horas</h3>
+          <section>
+            <div id="scope_page_two">
+              <p>Escopo aberto: </p>
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label">VALOR DO TICKET *</label>
+                <div class="col-lg-10">
+                  <%= form.text_field :amount_ticket, id: :contract_amount_ticket, class: "form-control autonumber", required:true, placeholder: "Valor do ticket", :data => { "a-sep" => '', "a-dec" => "," } %>
+                </div>
+              </div>
+            </div>
+
+            <div id="product_page_two">
+              <p>Produto: </p>
+              <div class="form-group clearfix" id="hours_volume">
+                <label class="col-lg-2 control-label">VOLUME DE TICKETS *</label>
+                <div class="col-lg-10">
+                  <%= form.text_field :hours_volume, id: :contract_hours_volume, class: "form-control", required:true, placeholder: "Volume de tickets contratados" %>
+                </div>
+              </div>
+            </div>
+
+            <div id="signature_page_two">
+              <p>Assinatura:</p>
+              <div class="form-group clearfix" id="tolerance">
+                <label class="col-lg-2 control-label">VOLUME DE TICKETS RECORRENTES *</label>
+                <div class="col-lg-10">
+                  <%= form.number_field :recurrent_tickets, id: :contract_recurrent_tickets, class: "form-control", placeholder: "Volume de tickets recorrentes" %>
+                </div>
+              </div>
+              
+              <div class="form-group clearfix" id="attribuition_model">
+                <label class="col-lg-2 control-label">MODELO DE ATRIBUIÇÃO *</label>
+                <div class="col-lg-10">
+                  <%= form.select(:attribuition_model,
+                          [ ['Semanal'],
+                            ['Quinzenal'],
+                            ['Mensal'],
+                            ['Trimestral'],
+                            ['Semestral'],
+                            ['Anual'] ],
+                            {:include_blank => false}, { class: 'form-control attribuition_model' }) %>
+                </div>
+              </div>
+              <div class="form-group clearfix" id="attribuition_model_day">
+                <label class="col-lg-2 control-label">DIA DO MÊS DO CREDITO DE HORAS *</label>
+                <div class="col-lg-10">
+                  <%= form.number_field :attribuition_model_day, id: :contract_attribuition_model_day, :class => "form-control", :placeholder => "Dia de credito de horas" %>
+                </div>
+              </div>
+              <div class="form-group clearfix" id="attribuition_model_invalid">
+                <label class="col-lg-2 control-label">DIA DO MÊS INEXISTENTE *</label>
+                <div class="col-lg-10">
+                  <%= form.select(:attribuition_model_invalid_day,
+                          [ ['Porstergar'],
+                            ['Antecipar'] ],
+                            {:include_blank => false}, { class: 'form-control' }) %>
+                </div>
+              </div>
+              <div class="form-group clearfix" id="attribuition_model_week">
+                <label class="col-lg-2 control-label">DIA DA SEMANA DO CRÉDITO DE HORAS *</label>
+                <div class="col-lg-10">
+                  <%= form.select(:attribuition_model_week_day,
+                          [ ['Domingo'],
+                            ['Segunda-feira'],
+                            ['Terça-feira'],
+                            ['Quarta-feira'],
+                            ['Quinta-feira'],
+                            ['Sábado'] ],
+                            {:include_blank => false}, { class: 'form-control' }) %>
+                </div>
+              </div>
+              <div class="form-group clearfix" id="tolerance">
+                <label class="col-lg-2 control-label">TOLERANCIA DE TICKETS *</label>
+                <div class="col-lg-10">
+                  <%= form.text_field :tolerance, id: :contract_tolerance, class: "form-control", required:true, placeholder: "Tolerância de tickets excedentes" %>
+                </div>
+              </div>
+
+              <div class="form-group clearfix" id="tolerance">
+                <label class="col-lg-2 control-label">VALIDADE *</label>
+                <div class="col-lg-10">
+                  <%= form.number_field :attribuition_model_validate_day, id: :contract_attribuition_model_validate_day, class: "form-control", placeholder: "Validade" %>
+                </div>
+              </div>
+            </div>
+
+            
+
+
+          </section>
+
+          <h3>Informações de pagamento</h3>
+          <section>
+
+            <p>Escopo aberto</p>
+            <div class="form-group clearfix">
+              <label class="col-lg-2 control-label">DIA DO FATURAMENTO *</label>
+              <div class="col-lg-10">
+                <%= form.number_field :billing_day, id: :contract_billing_day, class: "form-control", required:true, placeholder: "Dia do faturamento" %>
+              </div>
+            </div>
+            <div class="form-group clearfix">
+              <label class="col-lg-2 control-label">DIA DE VENCIMENTO *</label>
+              <div class="col-lg-10">
+                <%= form.number_field :maturity_day, id: :contract_maturity_day, class: "form-control", required:true, placeholder: "Dia de vencimento" %>
+              </div>
+            </div>
+
+            <p>Produto</p>
+            <p>valor to ticket * volume de ticket (R$)</p>
+            <div class="form-group clearfix">
+              <label class="col-lg-2 control-label">valor total contrato *</label>
+              <div class="col-lg-10">
+                <input type="text" name="" class="form-control" disabled="">
+              </div>
+            </div>
+            <div class="form-group clearfix">
+              <label class="col-lg-2 control-label">ENTRADA *</label>
+              <div class="col-lg-10">
+                <%= form.text_field :input_value, id: :contract_input_value, class: "form-control autonumber", placeholder: "Valor de entrada", :data => { "a-sep" => '', "a-dec" => "," } %>
+              </div>
+            </div>
+            <div class="form-group clearfix">
+              <label class="col-lg-2 control-label">DATA DA ENTRADA *</label>
+              <div class="col-lg-10">
+                <%= form.text_field :billing_date, id: :contract_billing_date, :class => "form-control", :placeholder => "dd/mm/yyyy", 'data-mask': "99/99/9999" %>
+                  <span class="input-group-addon bg-custom b-0 text-white"><i class="icon-calender"></i></span>
+              </div>
+            </div>
+            <div class="form-group clearfix">
+              <label class="col-lg-2 control-label">PARCELAS *</label>
+              <div class="col-lg-10">
+                <%= form.number_field :quotas, id: :contract_quotas, class: "form-control", placeholder: "Quantidade de parcelas" %>
+              </div>
+            </div>
+
+            <p>valor do contrato - entrada / parcelas</p>
+            <div class="form-group clearfix">
+              <label class="col-lg-2 control-label">VALOR DA PARCELA *</label>
+              <div class="col-lg-10">
+                <%= form.text_field :quota_amount, id: :contract_quota_amount, class: "form-control autonumber", placeholder: "Valor da parcela", :data => { "a-sep" => '', "a-dec" => "," }, :readonly => true %>
+              </div>
+            </div>
+            
+            <p>Assinatura</p>
+            <p>valor to ticket * volume de ticket recorrente (R$)</p>
+            <div class="form-group clearfix">
+              <label class="col-lg-2 control-label">valor total recorrente *</label>
+              <div class="col-lg-10">
+                <%= form.text_field :recurrent_amount, id: :contract_recurrent_amount, class: "form-control autonumber", placeholder: "Valor recorrente", :data => { "a-sep" => '', "a-dec" => "," }, :readonly => true %>
+              </div>
+            </div>
+          </section>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    if ($(".contract_type ").val() == 'Escopo aberto') {
+      $("#signature_page_two, #product_page_two").hide();
+    } else if ($(this).val() == 'Produto') {
+      $("#signature_page_two").hide();
+      $("#product_page_two").show();
+    } else if ($(this).val() == 'Assinatura') {
+      $("#signature_page_two").show();
+      $("#product_page_two").hide();
+    } else {
+      $("#signature_page_two").show();
+      $("#product_page_two").show();
+    }
+
+    $(".contract_type").change(function(){
+      if ($(this).val() == 'Escopo aberto') {
+        $("#signature_page_two, #product_page_two").hide();
+      } else if ($(this).val() == 'Produto') {
+        $("#signature_page_two").hide();
+        $("#product_page_two").show();
+      } else if ($(this).val() == 'Assinatura') {
+        $("#signature_page_two").show();
+        $("#product_page_two").hide();
+      } else {
+        $("#signature_page_two").show();
+        $("#product_page_two").show();
+      }
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    if ($(".attribuition_model").val() == 'Semanal' || $(".attribuition_model").val() == 'Quinzenal') {
+      $("#attribuition_model_day, #attribuition_model_invalid").hide();
+      $("#attribuition_model_week").show();
+    } else {
+      $("#attribuition_model_day, #attribuition_model_invalid").show();
+      $("#attribuition_model_week").hide();
+    }
+
+
+    $(".attribuition_model").change(function(){
+      if ($(".attribuition_model").val() == 'Semanal' || $(".attribuition_model").val() == 'Quinzenal') {
+        $("#attribuition_model_day, #attribuition_model_invalid").hide();
+        $("#attribuition_model_week").show();
+      } else {
+        $("#attribuition_model_day, #attribuition_model_invalid").show();
+        $("#attribuition_model_week").hide();
+      }
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Realiza a verificacao do tipo de contrato, alterando a obrigatoriedade de preenchimento dos campos
+    // if ($(".contract_type").val() == "Escopo aberto") {
+    //   $("#product").hide();
+    //   $("#signature").hide();
+    //   $("#attribuition_model, #hours_volume, #tolerance").hide();    
+    //   $("#scope").show();  
+
+    //   $("#contract_scope_ticket_amount").attr('required', 'required');
+    //   $('#contract_recurrent_amount, #contract_billing_day, #contract_first_billing_date, #contract_input_value, #contract_billing_date, #contract_quotas, #contract_quota_amount').removeAttr('required');
+    // } else if ($(".contract_type").val() == "Assinatura") {
+    //   $("#product").hide();
+    //   $("#signature").show();
+    //   $("#attribuition_model").show();
+    //   $("#scope").show();
+
+    //   $('#contract_recurrent_amount, #contract_billing_day, #contract_first_billing_date').attr('required', 'required');
+    //   $('#contract_input_value, #contract_billing_date, #contract_quotas, #contract_quota_amount').removeAttr('required');
+    // } else if ($(".contract_type").val() == "Produto") {
+    //   $("#product").show();
+    //   $("#signature").hide();
+    //   $("#attribuition_model").hide();
+    //   $("#scope").hide();
+
+    //   $("#contract_input_value, #contract_billing_date, #contract_quotas, #contract_quota_amount").attr('required', 'required');
+    //   $('#contract_recurrent_amount, #contract_billing_day, #contract_first_billing_date, #contract_scope_ticket_amount').removeAttr('required');
+    // } else if ($(".contract_type").val() == "Misto") {
+    //   $("#product").show();
+    //   $("#signature").show();
+    //   $("#attribuition_model").show();
+    //   $("#scope").show();
+
+    //   $("#contract_input_value, #contract_billing_date, #contract_quotas, #contract_quota_amount").attr('required', 'required');
+    //   $('#contract_scope_ticket_amount').attr('required');
+    //   $('#contract_recurrent_amount').attr('required');
+    // }
+
+    // $(".contract_type").change(function(){
+    //   if ($(this).val() == "Escopo aberto") {
+    //     $("#product").hide();
+    //     $("#signature").hide();
+    //     $("#attribuition_model, #hours_volume, #tolerance").hide();
+    //     $("#scope").show();  
+
+    //     $("#contract_scope_ticket_amount").attr('required', 'required');
+    //     $('#contract_recurrent_amount, #contract_billing_day, #contract_first_billing_date, #contract_input_value, #contract_billing_date, #contract_quotas, #contract_quota_amount').removeAttr('required');
+    //   } else if ($(this).val() == "Assinatura") {
+    //     $("#product").hide();
+    //     $("#signature").show();
+    //     $("#attribuition_model").show();
+    //     $("#scope").show();
+
+    //     $('#contract_recurrent_amount, #contract_billing_day, #contract_first_billing_date').attr('required', 'required');
+    //     $('#contract_input_value, #contract_billing_date, #contract_quotas, #contract_quota_amount').removeAttr('required');
+    //   } else if ($(this).val() == "Produto") {
+    //     $("#product").show();
+    //     $("#signature").hide();
+    //     $("#attribuition_model").hide();
+    //     $("#scope").hide();
+
+    //     $("#contract_input_value, #contract_billing_date, #contract_quotas, #contract_quota_amount").attr('required', 'required');
+    //     $('#contract_recurrent_amount, #contract_billing_day, #contract_first_billing_date, #contract_scope_ticket_amount').removeAttr('required');
+    //   } else if ($(this).val() == "Misto") {
+    //     $("#product").show();
+    //     $("#signature").show();
+    //     $("#attribuition_model").show();
+    //     $("#scope").show();
+
+    //     $("#contract_input_value, #contract_billing_date, #contract_quotas, contract_quota_amount").attr('required', 'required');
+    //     $('#contract_scope_ticket_amount').attr('required');
+    //     $('#contract_recurrent_amount').attr('required');
+    //   }
+    // })
+
+    // Valida o campo de dia de pagamento, para que so seja possivel inserir numeros
+    $("#contract_billing_day, #contract_maturity_day, #contract_attribuition_model_day").change(function(){
+      var val = Math.abs(parseInt(this.value, 10) || 1);
+      this.value = val > 31 ? 31 : val;
+    })
+
+    jQuery('#contract_signature_date, #contract_billing_date, #contract_first_billing_date').datepicker({
+      autoclose: true,
+      todayHighlight: true,
+      format: "dd/mm/yyyy",
+      language: 'pt-BR'
+    });
+  });
+</script>

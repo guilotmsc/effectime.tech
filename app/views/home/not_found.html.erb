@@ -1,0 +1,21 @@
+<section>
+  <div class="container-alt">
+    <div class="row">
+      <div class="col-sm-12 text-center">
+        <div class="home-wrapper">
+          <h1 class="home-text text-uppercase"><span class="text-pink">Bem vindo <%= current_user.username %></span></h1>
+          <h4 class="text-muted">Para começar, clique abaixo e cadastre uma empresa.</h4>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 text-center">
+            <p>
+              <%= link_to new_corporation_path, class: "btn btn-default btn-md waves-effect waves-light m-b-30" do %>
+                Nova empresa
+              <% end %>
+            </p>
+          </div> 
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

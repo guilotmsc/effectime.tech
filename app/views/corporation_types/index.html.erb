@@ -1,0 +1,27 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Corporation_types</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @corporation_types.each do |corporation_type| %>
+      <tr>
+        <td><%= corporation_type.name %></td>
+        <td><%= link_to 'Show', corporation_type %></td>
+        <td><%= link_to 'Edit', edit_corporation_type_path(corporation_type) %></td>
+        <td><%= link_to 'Destroy', corporation_type, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Corporation_type', new_corporation_type_path %>

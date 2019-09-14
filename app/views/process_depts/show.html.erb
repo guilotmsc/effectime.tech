@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Area:</strong>
+  <%= @process_dept.area %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @process_dept.name %>
+</p>
+
+<%= link_to 'Edit', edit_process_dept_path(@process_dept) %> |
+<%= link_to 'Back', process_depts_path %>

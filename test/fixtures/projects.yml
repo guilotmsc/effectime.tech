@@ -1,0 +1,25 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contract: one
+  area: MyString
+  sponsor: MyString
+  employee: one
+  manager: MyString
+  objective: MyString
+  start: 2018-11-27
+  end: 2018-11-27
+  estimate: 1.5
+  obs: MyText
+
+two:
+  contract: two
+  area: MyString
+  sponsor: MyString
+  employee: two
+  manager: MyString
+  objective: MyString
+  start: 2018-11-27
+  end: 2018-11-27
+  estimate: 1.5
+  obs: MyText

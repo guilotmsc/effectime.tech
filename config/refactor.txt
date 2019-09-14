@@ -1,0 +1,16 @@
+
+DEVISE // FORMULARIO DE CONVITE DE USUARIO
+
+<%= form_for(User.new, as: User.new, url: invitation_path(User.new), html: { method: :post }) do |f| %>
+  <% User.new.class.invite_key_fields.each do |field| -%>
+    <div class="form-group">
+      <label for="field-1" class="control-label">Email</label>
+        <%= f.email_field :email, :class => "form-control", placeholder: "Email" %>
+    </div>
+  <% end %>
+  <div class="form-group">
+    <button class="btn btn-primary waves-effect waves-light" type="submit">
+      Enviar convite
+    </button>
+  </div> 
+<% end %>

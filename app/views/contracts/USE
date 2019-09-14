@@ -1,0 +1,175 @@
+<h3>Controle de horas</h3>
+          <section>
+            <div id="scope_page_two">
+              <p>Escopo aberto: </p>
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label"></label>
+                <div class="col-lg-10">
+                  <span>Não tem atribuição de horas (Crédito)</span>
+                </div>
+              </div>
+            </div>
+
+            <div id="pag_dois_produtos">
+              <p>Produto: </p>
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label">VOLUME DE TICKETS *</label>
+                <div class="col-lg-10">
+                  <%= form.text_field :hours_volume, id: :contract_hours_volume, class: "form-control", required:true, placeholder: "Volume de tickets contratados" %>
+                </div>
+              </div>
+            </div>
+
+            <div id="pag_dois_assinaturas">
+              <p>Assinatura:</p>
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label">VOLUME DE TICKETS RECORRENTES *</label>
+                <div class="col-lg-10">
+                  <%= form.number_field :recurrent_tickets, id: :contract_recurrent_tickets, class: "form-control", placeholder: "Volume de tickets recorrentes" %>
+                </div>
+              </div>
+              
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label">MODELO DE ATRIBUIÇÃO *</label>
+                <div class="col-lg-10">
+                  <%= form.select(:attribuition_model,
+                          [ ['Semanal'],
+                            ['Quinzenal'],
+                            ['Mensal'],
+                            ['Trimestral'],
+                            ['Semestral'],
+                            ['Anual'] ],
+                            {:include_blank => false}, { class: 'form-control attribuition_model' }) %>
+                </div>
+              </div>
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label">DIA DA SEMANA DO CRÉDITO DE HORAS *</label>
+                <div class="col-lg-10">
+                  <%= form.select(:attribuition_model_week_day,
+                          [ ['Domingo'],
+                            ['Segunda-feira'],
+                            ['Terça-feira'],
+                            ['Quarta-feira'],
+                            ['Quinta-feira'],
+                            ['Sábado'] ],
+                            {:include_blank => false}, { class: 'form-control' }) %>
+                </div>
+              </div>
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label">DIA DO MÊS DO CREDITO DE HORAS *</label>
+                <div class="col-lg-10">
+                  <%= form.number_field :attribuition_model_day, id: :contract_attribuition_model_day, :class => "form-control", :placeholder => "Dia de credito de horas" %>
+                </div>
+              </div>
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label">DIA DO MÊS INEXISTENTE *</label>
+                <div class="col-lg-10">
+                  <%= form.select(:attribuition_model_invalid_day,
+                          [ ['Porstergar'],
+                            ['Antecipar'] ],
+                            {:include_blank => false}, { class: 'form-control' }) %>
+                </div>
+              </div>
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label">TOLERANCIA DE TICKETS *</label>
+                <div class="col-lg-10">
+                  <%= form.text_field :tolerance, id: :contract_tolerance, class: "form-control", required:true, placeholder: "Tolerância de tickets excedentes" %>
+                </div>
+              </div>
+
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label">VALIDADE *</label>
+                <div class="col-lg-10">
+                  <%= form.number_field :attribuition_model_validate_day, id: :contract_attribuition_model_validate_day, class: "form-control", placeholder: "Validade" %>
+                </div>
+              </div>
+            </div>
+
+          </section>
+
+          <h3>Informações de pagamento</h3>
+          <section>
+
+            <p>Informações gerais</p>
+            
+            <div class="form-group clearfix">
+              <label class="col-lg-2 control-label">VALOR DO TICKET *</label>
+              <div class="col-lg-10">
+                <%= form.text_field :amount_ticket, id: :contract_amount_ticket, class: "form-control autonumber", required:true, readonly: true, placeholder: "Valor do ticket", :data => { "a-sep" => '', "a-dec" => "," } %>
+              </div>
+            </div>
+            <div id="totals">
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label">DIA DO FATURAMENTO *</label>
+                <div class="col-lg-10">
+                  <%= form.number_field :billing_day, id: :contract_billing_day, class: "form-control", required:true, placeholder: "Dia do faturamento" %>
+                </div>
+              </div>
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label">DIA DE VENCIMENTO *</label>
+                <div class="col-lg-10">
+                  <%= form.number_field :maturity_day, id: :contract_maturity_day, class: "form-control", required:true, placeholder: "Dia de vencimento" %>
+                </div>
+              </div>
+            </div>
+
+
+            <p>Escopo aberto</p>
+            <div class="form-group clearfix">
+              <label class="col-lg-2 control-label"></label>
+              <div class="col-lg-10">
+                <span>Não tem especificidade de pagamento</span>
+              </div>
+            </div>
+
+            
+
+            <p>Produto</p>
+            <!-- <p>valor to ticket * volume de ticket (R$)</p> -->
+            <div class="form-group clearfix">
+              <label class="col-lg-2 control-label">TOTAL DO CONTRATO *</label>
+              <div class="col-lg-10">
+                <input type="text" name="" id="contract_total" class="form-control autonumber" disabled="">
+              </div>
+            </div>
+            <div id="pag_tres_produtos">
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label">ENTRADA *</label>
+                <div class="col-lg-10">
+                  <%= form.text_field :input_value, id: :contract_input_value, class: "form-control autonumber", placeholder: "Valor de entrada", :data => { "a-sep" => '', "a-dec" => "," } %>
+                </div>
+              </div>
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label">DATA DA ENTRADA *</label>
+                <div class="col-lg-10">
+                  <%= form.text_field :billing_date, id: :contract_billing_date, :class => "form-control", :placeholder => "dd/mm/yyyy", 'data-mask': "99/99/9999" %>
+                    <span class="input-group-addon bg-custom b-0 text-white"><i class="icon-calender"></i></span>
+                </div>
+              </div>
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label">NÚMERO DE PARCELAS *</label>
+                <div class="col-lg-10">
+                  <%= form.number_field :quotas, id: :contract_quotas, class: "form-control", placeholder: "Quantidade de parcelas" %>
+                </div>
+              </div>
+            </div>
+
+            <!-- <p>(valor do contrato - entrada) / parcelas</p> -->
+            <div class="form-group clearfix">
+              <label class="col-lg-2 control-label">VALOR DA PARCELA *</label>
+              <div class="col-lg-10">
+                <%= form.text_field :quota_amount, id: :contract_quota_amount, class: "form-control autonumber", placeholder: "Valor da parcela", :data => { "a-sep" => '', "a-dec" => "," }, :readonly => true %>
+              </div>
+            </div>
+            
+            <p>Assinatura</p>
+            <!-- <p>valor to ticket * volume de ticket recorrente (R$)</p> -->
+            <div id="pag_tres_assinaturas">
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label">VALOR TOTAL RECORRENTE *</label>
+                <div class="col-lg-10">
+                  <%= form.text_field :recurrent_amount, id: :contract_recurrent_amount, class: "form-control autonumber", placeholder: "Valor recorrente", :data => { "a-sep" => '', "a-dec" => "," }, :readonly => true %>
+                </div>
+              </div>
+            </div>
+          </section>

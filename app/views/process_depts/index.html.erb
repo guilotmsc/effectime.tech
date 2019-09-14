@@ -1,0 +1,52 @@
+<div class="row">
+  <div class="col-sm-12">
+    <h4 class="page-title">Processos</h4>
+    <ol class="breadcrumb">
+      <li>
+        <%= link_to root_path do %>Início<% end %>
+      </li>
+      <li class="active">
+        Processos
+      </li>
+    </ol>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card-box">
+      <h4 class="m-t-0 header-title"><b></b></h4>
+      <%= link_to new_process_dept_path, class: "btn btn-default btn-md waves-effect waves-light m-b-30" do %>
+        Novo processo
+      <% end %>
+
+      <table data-toggle="table"
+           data-show-columns="false"
+           data-page-size="5"
+           data-pagination="true" data-show-pagination-switch="true" class="table-bordered ">
+        <thead>
+          <tr>
+            <th width="100">#</th>
+            <th width="800">Nome</th>
+            <th width="800">Área</th>
+            <th width="10"></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% @process_depts.each do |pd| %>
+          <tr>
+            <td width="100"><%= pd.id.to_s.rjust(3,'0') %></td>
+            <td width="800"><%= pd.name %></td>
+            <td width="800"><%= pd.area.name %></td>
+            <td>
+              <%= link_to '', edit_process_dept_path(pd), class: 'fa fa-pencil', title: 'Editar' %>
+              <%= link_to '', pd, method: :delete, data: { confirm: 'Confirmar exclusão?' }, class: 'fa fa-trash-o', title: 'Excluir' %>
+            </td>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

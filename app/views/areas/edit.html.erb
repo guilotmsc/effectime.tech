@@ -1,0 +1,153 @@
+<div class="row">
+  <div class="col-lg-3"> </div>
+	<div class="col-lg-6">
+		<div class="card-box">
+			<h4 class="m-t-0 header-title"><b>Edição</b></h4>
+			<p class="text-muted font-13 m-b-30">
+        Edite os dados do registro
+      </p>
+
+			<%= form_with(model: @area, local: true, :id => "surveyForm") do |form| %>
+        <% if @area.errors.any? %>
+            <div class="alert alert-danger" id="danger-alert">
+              <button type="button" class="close" data-dismiss="alert">x</button>
+              <strong>Erro! </strong>
+              O nome da área deve ser inserido
+            </div>
+          <% end %>
+				<div class="form-group">
+          <label>Nome da área</label>
+          <%= form.text_field :name, id: :area_name, class: "form-control", placeholder: "Nome da Área"  %>
+        </div>
+        <label>Novo processo</label>
+        <div class="col-md-11"> 
+          <div class="form-group">
+            <input type="text" placeholder="" class="form-control" id="process-name" />
+          </div>
+        </div>
+        <div class="col-md-1">
+          <button type="button" class="btn btn-default addButton"><i class="fa fa-plus"></i></button>
+        </div> 
+        <br><br><br><br>
+
+        <table class="table table-striped m-0">
+        <thead>
+          <tr>
+            <th width="100">#</th>
+            <th width="800">Nome</th>
+            <th width="1"></th>
+          </tr>
+        </thead>
+
+        <tbody id="content-process">
+          <% @area_depts.each do |area| %>
+            <tr data-process-id='<%=area.id%>'>
+              <td width="100"><%= area.id.to_s.rjust(3,'0') %></td>
+              <td width="800"><%= area.name %></td>
+              <td>
+                <button class="btn btn-icon waves-effect waves-light btn-danger btn-xs delete-process" data-process="<%= area.id %>"><i class="fa fa-times"></i></button>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <br>
+				<div class="form-group text-right m-b-0">
+          <%= link_to 'Voltar', "/corporations/#{@area.corporation_id}/edit", class: 'btn btn-default waves-effect waves-light m-l-5', title: 'Voltar' %>
+          <button class="btn btn-primary waves-effect waves-light" type="submit">
+            Alterar
+          </button>
+				</div>
+			<% end %>
+		</div>
+ 
+<script>
+  $(document).ready (function(){
+    $("#danger-alert-alert").hide();
+
+    $("#danger-alert").fadeTo(2000, 500).slideUp(500, function(){
+      $("#alert-alert").slideUp(500);
+      $("#danger-alert-alert").hide();
+    });
+
+    !function($) {
+      "use strict";
+
+      var SweetAlert = function() {};
+
+      SweetAlert.prototype.init = function() {
+
+
+        $(".addButton").click(function(event){
+          event.preventDefault();
+
+          if ($("#process-name").val() != '') {
+            $.ajax({
+              type: "GET",
+              url: "/process_depts/create_process",
+              data: {
+                "area_id": <%= params[:id] %>,
+                "name": $("#process-name").val()
+              },
+              success: function(data) {
+                $('#content-process').append("<tr data-process-id='"+data.id+"'> \
+                    <td width='100'>"+data.id+"</td>\
+                    <td width='800'>"+ data.name +"</td>\
+                    <td>\
+                      <button class='btn btn-icon waves-effect waves-light btn-danger btn-xs delete-process' data-process="+data.id+"><i class='fa fa-times'></i></button>\
+                    </td>\
+                  </tr>");
+
+                $("#process-name").val('');    
+              },
+              error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+              }
+            });
+          } else {
+            $("#process-name").focus(); 
+          }
+        })
+
+
+        $(document).on('click', '.delete-process', function(event){
+          event.preventDefault();
+
+          let process_id = $(this).attr("data-process");
+
+          swal({   
+            title: "Confirmar exclusão?",   
+            text: "A exclusão de um processo não poderá ser desfeita!",   
+            type: "error",   
+            showCancelButton: true,   
+            confirmButtonColor: "#DD6B55",   
+            confirmButtonText: "Sim, remover!",
+            closeOnConfirm: false 
+          }, function(){
+            $.ajax({
+              type: "GET",
+              url: "/process_depts/delete_process",
+              data: {
+                "id": process_id
+              },
+              success: function(data) {
+                $('[data-process-id="' + process_id + '"]').remove();
+                swal("Pronto!", "Esse item foi removido com sucesso!", "success");
+              }
+            }); 
+          });
+        });
+    }
+
+    $.SweetAlert = new SweetAlert, $.SweetAlert.Constructor = SweetAlert
+    }(window.jQuery),
+
+    //initializing 
+    function($) {
+        "use strict";
+        $.SweetAlert.init()
+    }(window.jQuery);
+      
+  });
+</script>

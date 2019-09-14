@@ -1,0 +1,59 @@
+<div class="row">
+  <div class="col-sm-12">
+    <h4 class="page-title">Contratos</h4>
+    <ol class="breadcrumb">
+      <li>
+        <%= link_to root_path do %>Início<% end %>
+      </li>
+      <li class="active">
+        Contratos
+      </li>
+    </ol>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card-box">
+      <h4 class="m-t-0 header-title"><b></b></h4>
+      <%= link_to new_contract_path, class: "btn btn-default btn-md waves-effect waves-light m-b-30" do %>
+        Novo contrato
+      <% end %>
+      
+      <table data-toggle="table"
+           data-show-columns="false"
+           data-page-list="[5, 10, 20]"
+           data-page-size="5"
+           data-pagination="true" data-show-pagination-switch="true" class="table-bordered ">
+        <thead>
+          <tr>
+            <th width="100">#</th> 
+            <th width="800">Cliente</th>
+            <th width="200">Data</th>
+            <th width="200">Valor</th>
+            <th width="100">Volume de horas</th>
+            <th width="200">Tipo</th>
+            <th width="200">Modelo</th>
+            <th width="10"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @contracts.each do |contract| %>
+            <tr>
+              <td width="100"><%= contract.id.to_s.rjust(3,'0') %></td>
+              <td width="800"><%= contract.corporation.name %></td>
+              <td width="200"><%= contract.signature_date.strftime("%d/%m/%Y") %></td> 
+              <td width="200"><%= number_to_currency(contract.amount_ticket, unit: "R$ ", separator: ",", delimiter: ".") %></td> 
+              <td width="100"><%= contract.hours_volume %></td> 
+              <td width="200"><%= contract.contract_type %></td>
+              <td width="200"><%= contract.attribuition_model %></td>
+              <td align="center">
+                <%= link_to '<i class="fa fa-pencil"></i>'.html_safe, edit_contract_path(contract), class: 'btn btn-icon waves-effect waves-light btn-primary btn-xs', title: 'Editar' %>
+                <%= link_to '<i class="fa fa-times"></i>'.html_safe, contract, method: :delete, data: { confirm: 'Ao remover um contrato, registros de compromissos vinculados a ele também serão removidos. Confirmar exclusão?' }, class: 'btn btn-icon waves-effect waves-light btn-danger btn-xs', title: 'Excluir' %></td>
+            </tr>
+          <% end %> 
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

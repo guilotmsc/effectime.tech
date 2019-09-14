@@ -1,0 +1,27 @@
+<%= form_with(model: corporation_user, local: true) do |form| %>
+  <% if corporation_user.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(corporation_user.errors.count, "error") %> prohibited this corporation_user from being saved:</h2>
+
+      <ul>
+      <% corporation_user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :corporation_id %>
+    <%= form.text_field :corporation_id, id: :corporation_user_corporation_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :user_id %>
+    <%= form.text_field :user_id, id: :corporation_user_user_id %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

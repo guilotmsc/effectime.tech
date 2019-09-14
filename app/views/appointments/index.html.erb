@@ -1,0 +1,183 @@
+<style type="text/css">
+  .excel {
+    border: 1px solid #1f6f45 !important;
+    background-color: #1f6f45 !important
+  }
+</style>
+
+<!-- Page-Title -->
+<div class="row">
+  <div class="col-sm-12">
+    <div class="col-sm-10">
+      <h4 class="page-title">Agenda</h4>
+      <ol class="breadcrumb">
+        <li><a href="#">Inicio</a></li>
+        <li class="active">Agenda: <%= current_user.username %></li>
+      </ol>  
+    </div>
+    <div class="col-sm-2">
+      <%= link_to appointments_path(format: :xlsx), class: "btn btn-success waves-effect waves-light excel" do %>
+        <i class="fa fa-file-excel-o m-r-5"></i> <span>Exportar para excel</span>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="row" style="margin-left: 1%">
+  <div class="col-lg-2"></div>
+  <div class="col-lg-8">
+    <div class="row">
+      <h4>Contratos</h4>
+      <div class="widget">
+        <div class="widget-body">
+          <div class="row">
+            <% @contracts.each do |contract| %>
+              <div id="external-events" class="m-t-20">
+                <div class="col-md-3 col-sm-3 col-xs-3">
+                  <div class="external-event bg-primary" data-class="bg-primary" style="text-align: center; position: relative;" data-code="<%= contract.id %>" data-name="<%= contract.name %>" data-object="contract">
+                    <i class="fa fa-move"></i><%= contract.name %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="row">
+      <div class="col-md-2">
+        <h4>Projetos</h4>
+          <div class="widget">
+            <div class="widget-body">
+              <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                  <div id="external-events" class="m-t-20">
+                    <% @projects.each do |project| %>
+                      <div class="external-event bg-success" data-class="bg-success" style="text-align: center; position: relative;" data-code="<%= project.id %>" data-object="project" data-name="<%= project.name %>">
+                          <i class="fa fa-move"></i><%= project.name %>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="card-box">
+            <div id="calendar"></div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <h4>Processos</h4>
+          <div class="widget">
+            <div class="widget-body">
+              <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                  <div id="external-events" class="m-t-20">
+                    <% @process.each do |p| %>
+                      <div class="external-event bg-custom" data-class="bg-custom" style="text-align: center; position: relative;" data-code="<%= p.id %>" data-object="process" data-name="<%= p.name %>">
+                        <i class="fa fa-move"></i>
+                        <font style="font-size: 11px"><%= p.area.name %></font><br><%= p.name %>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade none-border" id="event-modal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title"><strong>Adicionar um compromisso</strong></h4>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="row">
+                    <div class="alert alert-danger" id="danger-alert">
+                      <button type="button" class="close" data-dismiss="alert">x</button>
+                      <strong>Erro! </strong>
+                      Preencha corretamente os horários
+                    </div>
+                    <div class="p-20">
+                      <label>Compromisso</label>
+                      <div class="form-group">
+                        <input id="process" disabled="true" type="text" class="form-control">
+                      </div>
+
+                      <label>Horário de início</label>
+                      <div class="input-group m-b-15">
+                        <div class="bootstrap-timepicker">
+                          <input id="time_initial" type="text" required="true" class="form-control">
+                        </div>
+                        <span class="input-group-addon bg-custom b-0 text-white"><i class="glyphicon glyphicon-time"></i></span>
+                      </div>
+                      
+                      <label>Horário de término</label>
+                      <div class="input-group m-b-15">
+                        <div class="bootstrap-timepicker">
+                          <input id="time_final" type="text" required="true" class="form-control">
+                        </div>
+                        <span class="input-group-addon bg-custom b-0 text-white"><i class="glyphicon glyphicon-time"></i></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-success save-event waves-effect waves-light" id="create_appointment">Criar compromisso</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="event-detail-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+          <div class="modal-content p-0 b-0">
+            <div class="panel panel-color panel-custom">
+              <div class="panel-heading"> 
+                <button type="button" class="close m-t-5" data-dismiss="modal" aria-hidden="true">×</button> 
+                <h3 class="panel-title" style="text-align: center">Detalhes</h3> 
+              </div> 
+              <div class="panel-body"> 
+                <div id="content-info"></div>
+              </div> 
+              <div class="panel-footer" style="text-align: right;">
+                <button type="button" class="btn btn-danger delete-event waves-effect waves-light" id="delete_appointment" data-dismiss="modal">Excluir</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
+
+    jQuery('#time_initial').timepicker({
+      showMeridian : false
+    });
+
+    jQuery('#time_final').timepicker({
+      showMeridian : false
+    });
+
+  })
+</script>
