@@ -23,7 +23,7 @@ module Business
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
     
-    config.action_mailer.default_url_options = { host: 'http://effectime.tech/', port: 4080 }
+    config.action_mailer.default_url_options = { host: 'http://effectime.tech/', port: 4060 }
       # config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
     config.action_mailer.delivery_method = :smtp
     config.action_mailer.smtp_settings = {
