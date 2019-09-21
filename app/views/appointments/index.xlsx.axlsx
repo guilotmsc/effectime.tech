@@ -18,7 +18,9 @@ wb.styles do |style|
     sheet.add_row ["Unidade de negócio", "Setor", "Processo", "Contrato", "Projeto", "Nome do colaborador", "Data", "Hora de entrada", "Hora de saída", "Saldo de horas"], style: heading
     
     @appExport.each do |ap|
-	    sheet.add_row [ap.empresa, ap.area, ap.processo, ap.contrato, ap.projeto, ap.usuario, ap.date, ap.inicio, ap.termino, 0]
-	  end
+      if ap.pc_id != nil
+        sheet.add_row [ap.pc_id, ap.area, ap.processo, ap.contrato, ap.projeto, ap.usuario, ap.date, ap.inicio, ap.termino, 0]
+      end
+    end
   end
 end

@@ -5,25 +5,27 @@ class AppointmentsController < ApplicationController
     # require 'csv'
 
     @appointments = Appointment.find_by_sql("select 
-                                              p.project_id,
-                                              p.contract_id,
-                                              p.process_dept_id,
-                                              c.name as corporacao,
-                                              co.name as contrato,
-                                              pj.name as projeto,
-                                              a.name as area,
-                                              pd.name as processo,
-                                              u.username as usuario,
-                                              TO_CHAR(start_moment, 'dd/mm/yyyy') as date,
-                                              TO_CHAR(start_moment, 'HH24:mi') as inicio,
-                                              TO_CHAR(end_moment, 'HH24:mi') as termino  
-                                            from appointments p
-                                            inner join users u on u.id = #{User.current.id}
-                                            left outer join process_depts pd on pd.id = p.process_dept_id
-                                            left outer join projects pj on pj.id = p.project_id
-                                            left outer join areas a on a.id = pd.area_id
-                                            left outer join contracts c on c.id = p.contract_id
-                                            left outer join corporations co on co.id = c.corporation_id")
+            pj.corporation_id as pc_id,
+            c.corporation_id as c_id,
+            co.id as co_id,
+            corp_process.name as empresa,
+            c.name as corporacao,
+            co.name as contrato,
+            pj.name as projeto,
+            a.name as area,
+            pd.name as processo,
+            u.username as usuario,
+            TO_CHAR(start_moment, 'dd/mm/yyyy') as date,
+            TO_CHAR(start_moment, 'HH:mi') as inicio,
+            TO_CHAR(end_moment, 'HH:mi') as termino  
+          from appointments p 
+          inner join users u on u.id = #{User.current.id}
+          left outer join process_depts pd on pd.id = p.process_dept_id
+          left outer join projects pj on pj.id = p.project_id
+          left outer join areas a on a.id = pd.area_id
+          left outer join corporations corp_process on corp_process.id = a.corporation_id
+          left outer join contracts c on c.id = p.contract_id
+          left outer join corporations co on co.id = c.corporation_id")
     # respond_to do |format|
     #   format.html
     #   format.csv { send_data @appointments.to_csv }
@@ -164,25 +166,29 @@ class AppointmentsController < ApplicationController
   # GET /appointments.json
   def index
     @appointments = Appointment.all
-    @appExport = Appointment.find_by_sql("select 
-                                              corp_process.name as empresa,
-                                              c.name as corporacao,
-                                              co.name as contrato,
-                                              pj.name as projeto,
-                                              a.name as area,
-                                              pd.name as processo,
-                                              u.username as usuario,
-                                              TO_CHAR(start_moment, 'dd/mm/yyyy') as date,
-                                              TO_CHAR(start_moment, 'HH:mi') as inicio,
-                                              TO_CHAR(end_moment, 'HH:mi') as termino  
-                                            from appointments p 
-                                            inner join users u on u.id = p.user_id
-                                            left outer join process_depts pd on pd.id = p.process_dept_id
-                                            left outer join projects pj on pj.id = p.project_id
-                                            left outer join areas a on a.id = pd.area_id
-                                            left outer join corporations corp_process on corp_process.id = a.corporation_id
-                                            left outer join contracts c on c.id = p.contract_id
-                                            left outer join corporations co on co.id = c.corporation_id")
+    @appExport = Appointment.find_by_sql("
+                    select 
+                      pj_corp.name as pc_id,
+                      c_corp.name as c_id,
+                      co.name as co_id,
+                      c.name as corporacao,
+                      co.name as contrato,
+                      pj.name as projeto,
+                      pj_area.name as area,
+                      pd.name as processo,
+                      u.username as usuario,
+                      TO_CHAR(start_moment, 'dd/mm/yyyy') as date,
+                      TO_CHAR(start_moment, 'HH:mi') as inicio,
+                      TO_CHAR(end_moment, 'HH:mi') as termino  
+                    from appointments p 
+                    inner join users u on u.id = #{User.current.id}
+                    left outer join process_depts pd on pd.id = p.process_dept_id
+                    left outer join projects pj on pj.id = p.project_id
+                    left outer join areas pj_area on pj_area.id = pj.area_id
+                    left outer join corporations pj_corp on pj.corporation_id = pj_corp.id
+                    left outer join contracts c on c.id = p.contract_id
+                    left outer join corporations c_corp on c.corporation_id = c_corp.id
+                    left outer join corporations co on co.id = c.corporation_id")
     @contracts = Contract.where("corporation_id in (select corporation_id from corporation_users where user_id = #{User.current.id})")
     @projects = Project.where("corporation_id in (select corporation_id from corporation_users where user_id = #{User.current.id})")
     @process = ProcessDept.find_by_sql("select process_depts.* from process_depts

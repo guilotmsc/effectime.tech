@@ -49,7 +49,7 @@ class CorporationsController < ApplicationController
           emails.each_with_index do |email, index|
             user = User.invite!(:email => emails[index])
             CorporationUser.create(:user_id => user.id, :corporation_id => @corporation.id, :admin => false)
-          end  
+          end
         end
         
         if @corporation.corporation_type_id== 1
