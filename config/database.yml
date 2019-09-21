@@ -77,5 +77,5 @@ test:
 production:
   <<: *default
   database: business_production
-  username: business
-  password: <%= ENV['BUSINESS_DATABASE_PASSWORD'] %>
+  username: postgres
+  password: j"85Mz'#z?NAq?`^
