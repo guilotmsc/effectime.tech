@@ -32,8 +32,14 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def after_sign_in_path_for(resource) 
-    '/home/not_found'
+  def after_sign_in_path_for(resource)
+    cp = Corporation.all.joins(:corporation_users).where("corporations.id = corporation_users.corporation_id and corporation_users.user_id = #{current_user.id}").first
+
+    if cp.present?
+      '/appointments'
+    else
+      '/home/not_found'
+    end
   end
 
   def after_invite_path_for(resource)

@@ -35,7 +35,7 @@ class AppointmentsController < ApplicationController
         format.xlsx {
           response.headers[
             'Content-Disposition'
-          ] = "attachment; filename='index.xlsx'"
+          ] = "attachment; filename=registro-de-horas.xlsx"
         }
         format.html { render :index }
     end
@@ -192,8 +192,8 @@ class AppointmentsController < ApplicationController
     @contracts = Contract.where("corporation_id in (select corporation_id from corporation_users where user_id = #{User.current.id})")
     @projects = Project.where("corporation_id in (select corporation_id from corporation_users where user_id = #{User.current.id})")
     @process = ProcessDept.find_by_sql("select process_depts.* from process_depts
-inner join areas on process_depts.area_id = areas.id
-where areas.corporation_id in (select corporation_id from corporation_users where user_id = #{User.current.id})")
+                    inner join areas on process_depts.area_id = areas.id
+                    where areas.corporation_id in (select corporation_id from corporation_users where user_id = #{User.current.id})")
     
     respond_to do |format|
       format.xlsx {
