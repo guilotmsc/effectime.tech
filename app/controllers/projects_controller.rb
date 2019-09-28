@@ -33,8 +33,8 @@ class ProjectsController < ApplicationController
   # GET /projects
   # GET /projects.json
   def index
-    @projects = Project.where("corporation_id in (select corporation_id from corporation_users where user_id = #{User.current.id})")
-    @corporations = Corporation.where("corporation_type_id = 2 and id in (select corporation_id from corporation_users where user_id = #{User.current.id})").count(:id)
+    @projects = Project.joins("inner join corporations on corporations.id = projects.corporation_id").where("corporations.workspace_id in (select workspace_id from workspace_users where user_id = #{User.current.id})")
+    @corporations = Corporation.where("corporation_type_id = 2 and workspace_id in (select workspace_id from workspace_users where user_id = #{User.current.id})").count(:id)
   end
 
   # GET /projects/1
