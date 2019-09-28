@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :workspace_users
+  resources :workspaces
   resources :clients
   resources :hours
   resources :corporation_types

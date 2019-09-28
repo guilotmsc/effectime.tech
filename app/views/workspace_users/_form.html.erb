@@ -1,0 +1,27 @@
+<%= form_with(model: workspace_user, local: true) do |form| %>
+  <% if workspace_user.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(workspace_user.errors.count, "error") %> prohibited this workspace_user from being saved:</h2>
+
+      <ul>
+      <% workspace_user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :workspace_id %>
+    <%= form.text_field :workspace_id, id: :workspace_user_workspace_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :user_id %>
+    <%= form.text_field :user_id, id: :workspace_user_user_id %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

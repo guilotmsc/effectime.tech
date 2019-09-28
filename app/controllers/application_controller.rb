@@ -33,13 +33,21 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    cp = Corporation.all.joins(:corporation_users).where("corporations.id = corporation_users.corporation_id and corporation_users.user_id = #{current_user.id}").first
+    cp = Corporation.all.joins("inner join workspace_users on workspace_users.workspace_id = corporations.workspace_id").where("workspace_users.user_id = #{current_user.id}").first
+    workspace_user = WorkspaceUser.all.where(user_id: current_user.id)
 
-    if cp.present?
-      '/appointments'
-    else
+    if workspace_user.length === 0
+      workspace = Workspace.create
+      WorkspaceUser.create(:workspace => workspace, :user_id => current_user.id, :admin => true)
       '/home/not_found'
+    else 
+      if cp.present?
+        '/appointments'
+      else
+        '/home/not_found'
+      end
     end
+    
   end
 
   def after_invite_path_for(resource)

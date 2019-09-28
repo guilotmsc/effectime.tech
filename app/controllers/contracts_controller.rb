@@ -4,8 +4,8 @@ class ContractsController < ApplicationController
   # GET /contracts
   # GET /contracts.json
   def index
-    @contracts = Contract.where("corporation_id in (select corporation_id from corporation_users where user_id = #{User.current.id})")
-    @clients = Corporation.where("corporation_type_id = 1 and id in (select corporation_id from corporation_users where user_id = #{User.current.id})").count(:id)
+    @contracts = Contract.where("workspace_id in (select workspace_id from workspace_users where user_id = #{User.current.id})")
+    @clients = Corporation.where("corporation_type_id = 1 and workspace_id in (select workspace_id from workspace_users where user_id = #{User.current.id})").count(:id)
   end
 
   # GET /contracts/1

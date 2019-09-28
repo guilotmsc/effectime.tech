@@ -2,11 +2,11 @@ class CorporationsController < ApplicationController
   before_action :set_corporation, only: [:show, :edit, :update, :destroy]
 
   def index_clients
-    @corporations = Corporation.all.joins(:corporation_users).where("corporation_users.user_id = #{User.current.id} and corporation_type_id = 1")
+    @corporations = Corporation.all.joins("inner join workspace_users on workspace_users.workspace_id = corporations.workspace_id").where("workspace_users.user_id = #{User.current.id} and corporation_type_id = 1")
   end  
 
   def index_companies
-    @corporations = Corporation.all.joins(:corporation_users).where("corporation_users.user_id = #{User.current.id} and corporation_type_id = 2")
+    @corporations = Corporation.all.joins("inner join workspace_users on workspace_users.workspace_id = corporations.workspace_id").where("workspace_users.user_id = #{User.current.id} and corporation_type_id = 2")
   end  
 
   # GET /corporations
@@ -37,8 +37,6 @@ class CorporationsController < ApplicationController
 
     respond_to do |format|
       if @corporation.save
-        CorporationUser.create(:user_id => User.current.id, :corporation_id => @corporation.id, :admin => true)
-
         if !params[:areas_array].blank?
           Area.where("id in (#{params[:areas_array]})").update(:corporation_id => @corporation.id)  
         end
@@ -48,7 +46,8 @@ class CorporationsController < ApplicationController
 
           emails.each_with_index do |email, index|
             user = User.invite!(:email => emails[index])
-            CorporationUser.create(:user_id => user.id, :corporation_id => @corporation.id, :admin => false)
+            
+            WorkspaceUser.create(:user_id => user.id, :workspace_id => params[:corporation][:workspace_id], :admin => false)
           end
         end
         
@@ -110,6 +109,7 @@ class CorporationsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def corporation_params
       params.require(:corporation).permit(:name, :corporation_type_id, :trading_name, :document, :address,
-                                          :phone, :city, :state, :contact, :role, :contact_phone, :email)
+                                          :phone, :city, :state, :contact, :role, :contact_phone, :email,
+                                          :workspace_id)
     end
 end

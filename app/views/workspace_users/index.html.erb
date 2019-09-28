@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Workspace_users</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Workspace</th>
+      <th>User</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @workspace_users.each do |workspace_user| %>
+      <tr>
+        <td><%= workspace_user.workspace %></td>
+        <td><%= workspace_user.user %></td>
+        <td><%= link_to 'Show', workspace_user %></td>
+        <td><%= link_to 'Edit', edit_workspace_user_path(workspace_user) %></td>
+        <td><%= link_to 'Destroy', workspace_user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Workspace_user', new_workspace_user_path %>

@@ -120,6 +120,8 @@ p {
     <div class="card-box">
       <div class="row">
         <%= form_with(model: corporation, local: true, :html => {id: "basic-form"}) do |form| %>
+          <% workspace = WorkspaceUser.find_by_user_id(User.current.id) %>
+          <%= form.hidden_field :workspace_id, id: :corporation_workspace_id, value: workspace.workspace_id, required:true %>
           <%= form.hidden_field :corporation_type_id, id: :corporation_corporation_type_id, value: 2, required:true %>
           <div class="p-20">
             <h3>Dados da empresa</h3>
