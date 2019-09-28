@@ -4,7 +4,10 @@ class ClientsController < ApplicationController
   # GET /clients
   # GET /clients.json
   def index
-    @clients = Client.all
+    @clients = Client.find_by_sql("SELECT clients.*
+                                  FROM clients
+                                  INNER JOIN corporation_users ON corporation_users.corporation_id = clients.corporation_id 
+                                  WHERE corporation_users.user_id = #{User.current.id}")
   end
 
   # GET /clients/1
@@ -28,7 +31,11 @@ class ClientsController < ApplicationController
 
     respond_to do |format|
       if @client.save
-        format.html { redirect_to @client, notice: 'Client was successfully created.' }
+        if !params[:areas_array].blank?
+          Area.where("id in (#{params[:areas_array]})").update(:client_id => @client.id)  
+        end
+
+        format.html { redirect_to clients_path, notice: 'Client was successfully created.' }
         format.json { render :show, status: :created, location: @client }
       else
         format.html { render :new }
@@ -69,6 +76,6 @@ class ClientsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def client_params
-      params.fetch(:client, {})
+      params.require(:client).permit(:corporation_id, :name, :address, :city, :state, :trading_name, :document, :phone, :contact, :role, :contact_phone, :email)
     end
 end

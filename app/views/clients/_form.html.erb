@@ -1,17 +1,498 @@
-<%= form_with(model: client, local: true) do |form| %>
-  <% if client.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(client.errors.count, "error") %> prohibited this client from being saved:</h2>
 
-      <ul>
-      <% client.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
+<style type="text/css">
+  .icon-pipe{
+  -webkit-border-radius: 50%;
+  background: #EFF0F4;
+  border-radius: 50%;
+  color: #7A7676;
+  display: inline-block;
+  height: 80px;
+  line-height: 30px;
+  text-align: center;
+  width: 80px;
+}
 
-  <div class="actions">
-    <%= form.submit %>
+.icon-pipe i{
+  padding-top: 3px;
+  zoom: 4;
+}
+
+.pipe-steps{
+  height: 100%;
+  padding: 5px !important;
+}
+
+.pipe-steps-title{
+  padding: 5px;
+}
+
+.deal-card{
+  border: 1px solid #EFF0F4;
+  padding: 3px 3px;
+  border-radius:2px;
+  margin-bottom: 10px;
+  z-index: 999999999;
+}
+
+.card-sortable{
+  text-align: left;
+  z-index: 999999999 !important;
+  padding-top: 2px;
+  margin-left: 6px;
+  margin-right: 6px;
+}
+
+.suaClassDatePicker {
+    z-index: 100000;
+}
+
+.panel-title {
+  text-align: center;
+  color: black;
+}
+
+.editable-click {
+  width: 100%
+}
+
+.panel-default {
+  border-width: 1px;
+  border-style: dashed;
+  border-color: #5fbeaa;
+}
+
+p {
+  margin: 1px 1px 1px
+}
+
+.board {
+  min-height: 290px;
+  width: 107%;
+  overflow-x: scroll;
+}
+.columns-fixed {
+  height: 100%;
+  width: 500px;
+  white-space: nowrap;
+}
+.column {
+  vertical-align: top;
+  height: 100%;
+  display: inline-block;
+  width: 250px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.card {
+  height: 200px;
+  background: #F00;
+  margin-bottom: 5px;
+}
+</style>
+
+<div class="row">
+  <div class="col-sm-12">
+    <ol class="breadcrumb">
+      <li>
+        <%= link_to root_path do %>Início<% end %>
+      </li>
+      <li>
+        <%= link_to clients_path do %>Clientes<% end %>
+      </li>
+      <li class="active">
+        Novo
+      </li>
+    </ol>
   </div>
-<% end %>
+</div>
+
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card-box">
+      <div class="row">
+        <%= form_with(model: client, local: true, :html => {id: "basic-form"}) do |form| %>
+          
+          <div class="p-20">
+            <h3>Dados do cliente</h3>
+            
+            <section>
+              <% corp = CorporationUser.find_by_user_id(18) %>
+              <%= form.text_field :corporation_id, id: :client_corporation_id, value: corp.corporation_id, required:true %>
+              <p class="text-muted m-b-30 font-13">
+                Preencha as informações principais do cliente. Todos os campos obrigatórios devem estar preenchidos.
+              </p>
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label" style="text-align: right;">NOME *</label>
+                <div class="col-lg-10">
+                  <%= form.text_field :name, id: :client_name, class: "form-control", required:true, placeholder: "Nome da empresa" %>
+                </div>
+              </div>
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label" style="text-align: right;">RAZÃO SOCIAL</label>
+                <div class="col-lg-10">
+                  <%= form.text_field :trading_name, id: :client_trading_name, class: "form-control", placeholder: "Razão social" %> 
+                </div>
+              </div>
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label" style="text-align: right;">CNPJ</label>
+                <div class="col-lg-10">
+                  <%= form.text_field :document, id: :client_document, class: "form-control", placeholder: "CNPJ", 'data-mask': "99.999.999/9999-99" %> 
+                </div>
+              </div>
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label" style="text-align: right;">ENDEREÇO</label>
+                <div class="col-lg-5">
+                  <%= form.text_field :address, id: :client_address, class: "form-control", placeholder: "Endereço" %>
+                </div>
+                <label class="col-lg-2 control-label" style="text-align: right;">TELEFONE</label>
+                <div class="col-lg-3">
+                  <%= form.text_field :phone, id: :client_phone, class: "form-control", placeholder: "Telefone", 'data-mask': "(99) 9999-9999" %> 
+                </div>
+              </div>
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label" style="text-align: right;">CIDADE</label>
+                <div class="col-lg-5">
+                  <%= form.text_field :city, id: :client_city, class: "form-control", placeholder: "Cidade" %>
+                </div>
+                <label class="col-lg-2 control-label" style="text-align: right;">ESTADO</label>
+                <div class="col-lg-3">
+                  <%= form.text_field :state, id: :client_state, class: "form-control", placeholder: "Estado" %>
+                </div>
+              </div>
+            </section>
+            <h3>Áreas e processos</h3>
+            <section>
+              <p class="text-muted m-b-30 font-13">
+                Defina as áreas e processos pertencentes ao cliente.
+              </p>
+              <div style="margin-left: -2% !important">
+                <div class="form-group clearfix">
+
+                  <%= hidden_field_tag :areas_array, '', id: :areas_array %>
+                  
+                  <div class="col-lg-3" style="margin-bottom: 1%">
+                    <a href="#" style="width: 90%; margin-left: 1%;" class="btn btn-default waves-effect waves-light" id="inline-area" data-type="text" data-title="Nova área" data-value="">Nova área</a>
+                  </div>
+                  
+                  <div class="board">
+                    <div class="columns-fixed" id="content-areas">
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <h3>Informações de contato</h3>
+            <section>
+              <p class="text-muted m-b-30 font-13">
+                Preencha as informações do contato referentes ao cliente.
+              </p>
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label " for="userName">CONTATO *</label>
+                <div class="col-lg-10">
+                  <%= form.text_field :contact, id: :client_contact, class: "form-control", required:true, placeholder: "Pessoa de contato" %> 
+                </div>
+              </div>
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label " for="userName">FUNÇÃO *</label>
+                <div class="col-lg-10">
+                  <%= form.text_field :role, id: :client_role, class: "form-control", required:true, placeholder: "Função" %> 
+                </div>
+              </div>
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label ">TELEFONE *</label>
+                <div class="col-lg-10">
+                  <%= form.text_field :contact_phone, id: :client_contact_phone, class: "form-control", required:true, placeholder: "Telefone" %> 
+                </div>
+              </div>
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label ">EMAIL *</label>
+                <div class="col-lg-10">
+                  <%= form.text_field :email, id: :client_email, class: "form-control", required:true, data: {'parsley-type' => 'email'}, placeholder: "Email" %>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+
+    !function($) {
+    "use strict";
+
+    var SweetAlert = function() {};
+
+    SweetAlert.prototype.init = function() {
+      $("#content-areas").on('click', '.delete-area', function(event) {
+        
+        event.preventDefault();
+
+        let area_id = this.id;
+
+        //Warning Message
+        swal({   
+            title: "Confirmar exclusão?",
+            text: "Ao remover uma área, seus processos são automaticamente removidos!",   
+            type: "error",   
+            showCancelButton: true,   
+            confirmButtonColor: "#DD6B55",   
+            confirmButtonText: "Sim, remover!",
+            cancelButtonText: "Cancelar",
+            closeOnConfirm: false 
+        }, function(){
+          console.log(area_id);
+          $.ajax({
+            type: "GET",
+            url: "/areas/delete_area",
+            data: {
+              "id": area_id
+            },
+            success: function(data) {
+              $('[data-area-id="' + area_id +'"]').remove();
+              swal("Pronto!", "Esse item foi removido com sucesso!", "success");
+            }
+          }); 
+        });
+      });
+       $("#content-areas").on('click', '.delete-process', function() {
+
+        event.preventDefault();
+        
+        let process_id = this.id;
+
+        //Warning Message
+        swal({   
+            title: "Confirmar exclusão?",   
+            text: "A exclusão de um processo não poderá ser desfeita!",   
+            type: "error",   
+            showCancelButton: true,   
+            confirmButtonColor: "#DD6B55",   
+            confirmButtonText: "Sim, remover!",
+            closeOnConfirm: false 
+        }, function(){
+          $.ajax({
+            type: "GET",
+            url: "/process_depts/delete_process",
+            data: {
+              "id": process_id
+            },
+            success: function(data) {
+              $('[data-process-id="' + process_id +'"]').remove();
+              swal("Pronto!", "Esse item foi removido com sucesso!", "success");
+            }
+          }); 
+        });
+      });
+    }
+
+    $("#add_user").click(function(e){
+      e.preventDefault();
+
+      var oldValue = jQuery("#emails_array").val();
+
+      var arr = oldValue === "" ? [] : oldValue.split(',');
+      arr.push($("#email").val());
+      var newValue = arr.join(',');
+
+      jQuery("#emails_array").val(newValue);
+
+      var body = "<table class='table table-striped m-0'><thead><tr><th>#</th><th>Email</th>\
+                  <th>Tipo</th><th>Status</th></tr></thead><tbody id='content-users'></tbody></table>";
+
+      if (oldValue == '') {
+        $("#content-table").html(body);
+      }
+
+      var row = "";
+      row = "<tr>\
+        <th scope='row'>#</th>\
+        <td>"+$("#email").val()+"</td>\
+        <td><span class='label label-table label-primary'>Colaborador</span></td>\
+        <td><span class='label label-table label-success'>Pendente</span></td>\
+      </tr>";
+
+      $("#content-users").append(row);
+
+      $("#email").val('');
+      $("#email-confirm").val('');
+    })
+
+    $('#inline-area').editable({
+       type: 'text',
+       pk: 1,
+       name: 'area',
+       title: 'Nova área',
+       mode: 'inline',
+       success: function(response, newValue) {
+         create_area(newValue);
+      }
+    });
+
+
+    function create_area(name) {
+      $.ajax({
+        type: "GET",
+        url: "/areas/create_area",
+        data: {
+          "name": name
+        },
+        success: function(data) {
+          $("#content-areas").append("<div class='column'>\
+            <div class='col-lg-3' style='width: 100%;margin-left: 1%;' data-area-id='" + data.id + "'>\
+              <div class='panel panel-default'>\
+                <div class='panel-heading pipe-steps-title'>\
+                  <div class='contact-action'>\
+                    <div class='row'>\
+                      <div class='col-md-10'>\
+                        <h4 class='panel-title'><a href='#' class='popover-created-area'>"+data.name+"</a>\
+                        </h4>\
+                      </div>\
+                      <div class='col-md-2'>\
+                        <button id='" + data.id + "' class='btn btn-icon waves-effect waves-light btn-danger btn-xs delete-area'><i class='fa fa-times'></i></button></td>\
+                      </div>\
+                    </div>\
+                    <div id='content-process-"+data.id+"'></div>\
+                    <div class='pipe-steps'>\
+                      <a href='#' class='btn btn-default waves-effect waves-light' id='inline-process-"+data.id+"' data-type='text' data-value=''>Add processo</a>\
+                    </div>\
+                  </div>\
+                </div>\
+              </div>  \
+            </div></div>");
+
+          $('#inline-area').editable('setValue', "");
+          $('#inline-area').text("Nova área");
+
+          $("#inline-process-" + data.id).editable({
+            type: 'text',
+            pk: data.id,
+            name: 'process',
+            title: 'Novo processo',
+            mode: 'inline',
+            showbuttons: false,
+            success: function(response, newValue) {
+              create_process(data.id, newValue);
+            }
+          });
+
+          $('.popover-created-area').editable({
+             type: 'text',
+             pk: data.id,
+             name: 'area',
+             title: 'Editar area',
+             showbuttons: false,
+             success: function(response, newValue) {
+               edit_area(data.id, newValue);
+            }
+          });
+
+          var oldValue = jQuery("#areas_array").val();
+          var arr = oldValue === "" ? [] : oldValue.split(',');
+          arr.push(data.id);
+          var newValue = arr.join(',');
+
+          jQuery("#areas_array").val(newValue);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+          alert(xhr.responseText);
+          alert(thrownError);
+        }
+      });
+    }
+
+
+    function edit_area(area_id, name) {
+      $.ajax({
+        type: "GET",
+        url: "/areas/edit_area",
+        data: {
+          "area_id": area_id,
+          "name": name
+        },
+        success: function(data) {
+          
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+          alert(xhr.responseText);
+          alert(thrownError);
+        }
+      });
+    }
+
+
+    function create_process(area_id, name) {
+      $.ajax({
+        type: "GET",
+        url: "/process_depts/create_process",
+        data: {
+          "area_id": area_id,
+          "name": name
+        },
+        success: function(data) {
+          $('#content-process-'+data.area_id).append("<div class='row card-sortable' data-process-id='" + data.id + "'>\
+                                                        <div class='panel deal-card' style='text-align: center'>\
+                                                          <div class='row'>\
+                                                            <div class='col-md-10'>\
+                                                              <p><a href='#' class='popover-created-process'>" + data.name + "</a></p>\
+                                                            </div>\
+                                                            <div class='col-md-2'>\
+                                                              <button id='" + data.id + "' class='btn btn-icon waves-effect waves-light btn-danger btn-xs delete-process'><i class='fa fa-times'></i></button></td>\
+                                                            </div>\
+                                                          </div>\
+                                                        </div>\
+                                                      </div>");
+
+          $('#inline-process-'+data.area_id).editable('setValue', "");
+          $('#inline-process-'+data.area_id).text("Novo processo");
+          
+          $('.popover-created-process').editable({
+             type: 'text',
+             pk: data.id,
+             name: 'process',
+             title: 'Editar processo',
+             showbuttons: false,
+             success: function(response, newValue) {
+               edit_process(data.id, newValue);
+            }
+          });
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+          alert(xhr.responseText);
+          alert(thrownError);
+        }
+      });
+    }
+
+
+    function edit_process(process_id, name) {
+      $.ajax({
+        type: "GET",
+        url: "/process_depts/edit_process",
+        data: {
+          "process_id": process_id,
+          "name": name
+        },
+        success: function(data) {
+          
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+          alert(xhr.responseText);
+          alert(thrownError);
+        }
+      });
+    }
+    
+  $.SweetAlert = new SweetAlert, $.SweetAlert.Constructor = SweetAlert
+    }(window.jQuery),
+
+    //initializing 
+    function($) {
+        "use strict";
+        $.SweetAlert.init()
+    }(window.jQuery);
+  });
+</script>

@@ -17,7 +17,7 @@ class ProjectsController < ApplicationController
   end
 
   def get_contracts_by_client
-    @result = Contract.where(corporation_id: params[:client])
+    @result = Contract.where(client_id: params[:client])
     respond_to do |format|
       format.json { render :json => @result }
     end
@@ -30,10 +30,22 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def get_areas_by_client
+    @result = Area.where(client_id: params[:client])
+    respond_to do |format|
+      format.json { render :json => @result }
+    end
+  end
+
   # GET /projects
   # GET /projects.json
   def index
-    @projects = Project.where("corporation_id in (select corporation_id from corporation_users where user_id = #{User.current.id})")
+    @projects = Project.joins("left outer join clients on clients.id = projects.client_id")
+                       .where("(projects.corporation_id in (
+                              select corporation_id from corporation_users where user_id = #{User.current.id})
+                              or
+                              clients.corporation_id in (
+                              select corporation_id from corporation_users where user_id = #{User.current.id}))")
     @corporations = Corporation.where("corporation_type_id = 2 and id in (select corporation_id from corporation_users where user_id = #{User.current.id})").count(:id)
   end
 
@@ -100,6 +112,6 @@ class ProjectsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def project_params
       params.require(:project).permit(:name, :contract_id, :corporation_id, :type_project, :area_id, :sponsor, :manager, :objective, 
-                                      :start_date, :end_date, :estimate, :obs, :associate, :code, user_ids:[])
+                                      :client_id, :start_date, :end_date, :estimate, :obs, :associate, :code, user_ids:[])
     end
 end

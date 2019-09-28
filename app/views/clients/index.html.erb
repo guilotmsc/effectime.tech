@@ -1,25 +1,54 @@
-<p id="notice"><%= notice %></p>
+<div class="row">
+  <div class="col-sm-12">
+    <h4 class="page-title">Clientes</h4>
+    <ol class="breadcrumb">
+      <li>
+        <%= link_to root_path do %>Início<% end %>
+      </li>
+      <li class="active">
+        Clientes
+      </li>
+    </ol>
+  </div>
+</div>
 
-<h1>Clients</h1>
-
-<table>
-  <thead>
-    <tr>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @clients.each do |client| %>
-      <tr>
-        <td><%= link_to 'Show', client %></td>
-        <td><%= link_to 'Edit', edit_client_path(client) %></td>
-        <td><%= link_to 'Destroy', client, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New Client', new_client_path %>
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card-box">
+      <h4 class="m-t-0 header-title"><b></b></h4>
+      <%= link_to new_client_path, class: "btn btn-default btn-md waves-effect waves-light m-b-30" do %>
+        Novo cliente
+      <% end %>
+      
+      <table data-toggle="table"
+           data-show-columns="false"
+           data-page-size="5"
+           data-pagination="true" data-show-pagination-switch="true" class="table-bordered ">
+        <thead>
+          <tr>
+            <th>#</th> 
+            <th>Nome</th>
+            <th>Endereço</th>
+            <th>Cidade</th>
+            <th>Estado</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @clients.each do |client| %>
+            <tr>
+              <td><%= client.id.to_s.rjust(3,'0') %></td>
+              <td><%= client.name %></td>
+              <td><%= client.address %></td> 
+              <td><%= client.city %></td> 
+              <td><%= client.state %></td>
+              <td>
+                <%= link_to '<i class="fa fa-pencil"></i>'.html_safe, edit_client_path(client), class: 'btn btn-icon waves-effect waves-light btn-primary btn-xs', title: 'Editar' %>
+                <%= link_to '<i class="fa fa-times"></i>'.html_safe, client, method: :delete, data: { confirm: 'Ao remover uma empresa, registros de projetos e colaboradores vinculados a ela também serão removidos. Confirmar exclusão?' }, class: 'btn btn-icon waves-effect waves-light btn-danger btn-xs', title: 'Excluir' %></td>
+            </tr>
+          <% end %> 
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

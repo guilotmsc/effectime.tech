@@ -52,14 +52,8 @@ class CorporationsController < ApplicationController
           end
         end
         
-        if @corporation.corporation_type_id== 1
-          format.html { redirect_to index_clients_corporations_path }
-          format.json { head :no_content }  
-        else
-          # format.html { redirect_to index_companies_corporations_path, notice: 'Corporation was successfully destroyed.' }
-          format.html { redirect_to new_client_path }
-          format.json { head :no_content }
-        end
+        format.html { redirect_to new_client_path }
+        format.json { head :no_content }
       else
         format.html { render :new }
         format.json { render json: @corporation.errors, status: :unprocessable_entity }

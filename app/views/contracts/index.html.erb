@@ -42,7 +42,7 @@
             <% @contracts.each do |contract| %>
               <tr>
                 <td width="100"><%= contract.id.to_s.rjust(3,'0') %></td>
-                <td width="800"><%= contract.corporation.name %></td>
+                <td width="800"><%= contract.client.name %></td>
                 <td width="200"><%= contract.signature_date.strftime("%d/%m/%Y") %></td> 
                 <td width="200"><%= number_to_currency(contract.amount_ticket, unit: "R$ ", separator: ",", delimiter: ".") %></td> 
                 <td width="100"><%= contract.hours_volume %></td> 

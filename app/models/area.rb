@@ -1,5 +1,6 @@
 class Area < ApplicationRecord
    belongs_to :corporation, optional: true
+   belongs_to :client, optional: true
    has_many :process_depts, dependent: :destroy
    has_many :projects, dependent: :destroy
 

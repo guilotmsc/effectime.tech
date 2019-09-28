@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190921130318) do
+ActiveRecord::Schema.define(version: 20190928130654) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,12 +38,27 @@ ActiveRecord::Schema.define(version: 20190921130318) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "corporation_id"
+    t.bigint "client_id"
+    t.index ["client_id"], name: "index_areas_on_client_id"
     t.index ["corporation_id"], name: "index_areas_on_corporation_id"
   end
 
   create_table "clients", force: :cascade do |t|
+    t.string "name"
+    t.string "address"
+    t.string "city"
+    t.string "state"
+    t.string "trading_name"
+    t.string "document"
+    t.string "phone"
+    t.string "contact"
+    t.string "role"
+    t.string "contact_phone"
+    t.string "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "corporation_id"
+    t.index ["corporation_id"], name: "index_clients_on_corporation_id"
   end
 
   create_table "contracts", force: :cascade do |t|
@@ -77,6 +92,8 @@ ActiveRecord::Schema.define(version: 20190921130318) do
     t.decimal "recurring_amount_ticket"
     t.decimal "overplus_ticket_amout"
     t.decimal "extra_hour_amount"
+    t.bigint "client_id"
+    t.index ["client_id"], name: "index_contracts_on_client_id"
     t.index ["corporation_id"], name: "index_contracts_on_corporation_id"
   end
 
@@ -162,7 +179,9 @@ ActiveRecord::Schema.define(version: 20190921130318) do
     t.bigint "area_id"
     t.bigint "corporation_id"
     t.string "code"
+    t.bigint "client_id"
     t.index ["area_id"], name: "index_projects_on_area_id"
+    t.index ["client_id"], name: "index_projects_on_client_id"
     t.index ["contract_id"], name: "index_projects_on_contract_id"
     t.index ["corporation_id"], name: "index_projects_on_corporation_id"
   end
@@ -211,7 +230,10 @@ ActiveRecord::Schema.define(version: 20190921130318) do
   add_foreign_key "appointments", "process_depts"
   add_foreign_key "appointments", "projects"
   add_foreign_key "appointments", "users"
+  add_foreign_key "areas", "clients"
   add_foreign_key "areas", "corporations"
+  add_foreign_key "clients", "corporations"
+  add_foreign_key "contracts", "clients"
   add_foreign_key "contracts", "corporations"
   add_foreign_key "corporation_areas", "areas"
   add_foreign_key "corporation_areas", "corporations"
@@ -221,6 +243,7 @@ ActiveRecord::Schema.define(version: 20190921130318) do
   add_foreign_key "hours", "corporations"
   add_foreign_key "process_depts", "areas"
   add_foreign_key "projects", "areas"
+  add_foreign_key "projects", "clients"
   add_foreign_key "projects", "contracts"
   add_foreign_key "projects", "corporations"
 end

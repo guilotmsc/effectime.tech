@@ -4,8 +4,8 @@ class ContractsController < ApplicationController
   # GET /contracts
   # GET /contracts.json
   def index
-    @contracts = Contract.where("corporation_id in (select corporation_id from corporation_users where user_id = #{User.current.id})")
-    @clients = Corporation.where("corporation_type_id = 1 and id in (select corporation_id from corporation_users where user_id = #{User.current.id})").count(:id)
+    @contracts = Contract.joins("inner join clients on clients.id = contracts.client_id").where("clients.corporation_id in (select corporation_id from corporation_users where user_id = #{User.current.id})")
+    @clients = Client.where("corporation_id in (select corporation_id from corporation_users where user_id = #{User.current.id})").count(:id)
   end
 
   # GET /contracts/1
@@ -75,6 +75,6 @@ class ContractsController < ApplicationController
                                         :attribuition_model_validate_day, :recurrent_tickets, :hours_volume, :amount_ticket, :tolerance,
                                         :maturity_day, :input_value, :billing_date, :quotas, :quota_amount, :recurrent_amount, 
                                         :scope_ticket_amount, :billing_day, :recurring_amount_ticket, :overplus_ticket_amout,
-                                        :extra_hour_amount)
+                                        :extra_hour_amount, :client_id)
     end
 end

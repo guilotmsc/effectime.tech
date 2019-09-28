@@ -28,6 +28,7 @@ Rails.application.routes.draw do
       get :get_corporations
       get :get_contracts_by_client
       get :get_areas_by_corporation
+      get :get_areas_by_client
     end
   end
   resources :contracts

@@ -44,7 +44,13 @@
               <tr>
                 <td width="100"><%= project.id.to_s.rjust(3,'0') %></td>
                 <td width="800"><%= project.name %></td>
-                <td width="800"><%= project.corporation.name %></td>
+                <td width="800">
+                  <% if project.corporation.present? %>
+                    <%= project.corporation.name %>
+                  <% else %>
+                    <%= project.client.name %>
+                  <% end %>
+                </td>
                 <td width="800">Contrato #<%= project.contract_id %></td>
                 <td width="800"><%= project.sponsor %></td>
                 <td width="800"><%= project.manager %></td>

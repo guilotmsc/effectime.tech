@@ -47,13 +47,13 @@
                           ['Projetos de Clientes'] ],
                           {:selected => @project.type_project, :include_blank => false}, { class: 'form-control' }) %>
             </div>
-            <div class="form-group">
-              <span>CLIENTE/EMPRESA</span>
-              <% if @project.type_project == 'Projetos Internos' %>
-                <%= form.select(:corporation_id, Corporation.all.joins(:corporation_users).where("corporation_users.user_id = #{User.current.id} and corporation_type_id = 2").collect {|u| [u.name, u.id]}, { :selected => @project.corporation_id, :prompt=>"Selecione uma empresa", required:true}, {class: "form-control select2"}) %>
-              <% else %>
-                <%= form.select(:corporation_id, Corporation.all.joins(:corporation_users).where("corporation_users.user_id = #{User.current.id} and corporation_type_id = 1").collect {|u| [u.name, u.id]}, { :selected => @project.corporation_id, :prompt=>"Selecione uma empresa", required:true}, {class: "form-control select2"}) %>
-              <% end %>
+            <div class="form-group" id="corporation" hidden="true">
+              <span>EMPRESA</span>
+              <%= form.select(:corporation_id, Corporation.all.joins(:corporation_users).where("corporation_users.user_id = #{User.current.id} and corporation_type_id = 2").collect {|u| [u.name, u.id]}, { :selected => @project.corporation_id, :prompt=>"Selecione uma empresa", required:true}, {class: "form-control select2"}) %>
+            </div>
+            <div class="form-group" id="client" hidden="true">
+              <span>CLIENTE</span>
+              <%= form.select(:client_id, Client.all.joins("INNER JOIN corporation_users ON corporation_users.corporation_id = clients.corporation_id ").where("corporation_users.user_id = #{User.current.id}").collect {|u| [u.name, u.id]}, { :selected => @project.corporation_id, :prompt=>"Selecione um cliente"}, {class: "form-control select2"}) %>
             </div>
             <div class="form-group" id="content-contract" hidden="true">
               <span>CONTRATO</span>
@@ -141,9 +141,33 @@
     $("#danger-alert-alert").hide();
 
 
-    if('<%= @project.contract_id %>') {
-      $("#content-contract").show()
+
+    if($("select[name='project[type_project]']").val() === "Projetos de Clientes"){
+      checkClient();
+      $("#corporation").hide();
+      $("#client").show();
+      $("#content-contract").show();
+    } else {
+      checkCorporation();
+      $("#corporation").show();
+      $("#client").hide();
+      $("#content-contract").hide();
     }
+
+    $("select[name='project[type_project]']").change(function(){
+      if($("select[name='project[type_project]']").val() === "Projetos de Clientes"){
+        checkClient();
+        $("#corporation").hide();
+        $("#client").show();
+        $("#content-contract").show();
+      } else {
+        checkCorporation();
+        $("#corporation").show();
+        $("#client").hide();
+        $("#content-contract").hide();
+      }
+    })
+
 
     $("#danger-alert").fadeTo(2000, 500).slideUp(500, function(){
       $("#alert-alert").slideUp(500);
@@ -157,67 +181,19 @@
       language: 'pt-BR'
     });
     
-    $("select[name='project[type_project]']").change(function(){
-      $("select[name='project[corporation_id]']")
-      
-      $("select[name='project[corporation_id]'] option").remove();
+    $("select[name='project[type_project]']").change(function() {
+      $("select[name='project[contract_id]'] option").remove();
       $("select[name='project[area_id]'] option").remove();
-      
-      var row = "<option value=\"" + "" + "\">" + "Selecione um cliente" + "</option>";
-      $(row).appendTo("select[name='project[corporation_id]']");
+      var row = "<option value=\"" + "" + "\">" + "Nenhum cliente selecionado" + "</option>";
+      $(row).appendTo("select[name='project[contract_id]']");
       $(row).appendTo("select[name='project[area_id]']");
-    
-      if ($(this).val() == 'Projetos Internos') {
-        $("#content-contract").hide();
-        $.ajax({
-          dataType: "json",
-          cache: false,
-          url: '/projects/get_corporations/',
-          timeout: 5000,
-          success: function(data) {
-            // Clear all options from course select
-            $("select[name='project[corporation_id]'] option").remove();
-            //put in a empty default line
-            var row = "<option value=\"" + "" + "\">" + "Selecione uma empresa" + "</option>";
-            $(row).appendTo("select[name='project[corporation_id]']");
-            // Fill course select
-            $.each(data, function(i, j) {
-              row = "<option value=\"" + j.id + "\">" + j.name + "</option>";
-              $(row).appendTo("select[name='project[corporation_id]']");
-            });
-          },
-          error: function(XMLHttpRequest, errorTextStatus, error) {
-            alert("Failed to submit : " + errorTextStatus + " ;" + error);
-          }
-        });
-      } else if($(this).val() == 'Projetos de Clientes') {
-        $("#content-contract").show();
-        $.ajax({
-          dataType: "json",
-          cache: false,
-          url: '/projects/get_clients/',
-          timeout: 5000,
-          success: function(data) {
-            // Clear all options from course select
-            $("select[name='project[corporation_id]'] option").remove();
-            $("select[name='project[contract_id]'] option").remove();
-            //put in a empty default line
-            var row = "<option value=\"" + "" + "\">" + "Selecione um cliente" + "</option>";
-            $(row).appendTo("select[name='project[corporation_id]']");
-            row = "<option value=\"" + "" + "\">" + "Nenhum contrato associado ao cliente" + "</option>";
-            $(row).appendTo("select[name='project[contract_id]']");
-            // Fill course select
-            $.each(data, function(i, j) {
-              row = "<option value=\"" + j.id + "\">" + j.name + "</option>";
-              $(row).appendTo("select[name='project[corporation_id]']");
-            });
-          },
-          error: function(XMLHttpRequest, errorTextStatus, error) {
-            alert("Failed to submit : " + errorTextStatus + " ;" + error);
-          }
-        });
+
+      if($("select[name='project[type_project]']").val() === "Projetos de Clientes"){
+        checkClient();
+      } else {
+        checkCorporation();
       }
-    });
+    })
 
 
     $("select[name='project[corporation_id]']").change(function(){
@@ -288,5 +264,239 @@
         });
       }
     });
+
+
+
+
+
+
+    function checkCorporation() {
+      if ($("select[name='project[corporation_id]']").val() == '') {
+        $("select[name='project[contract_id]'] option").remove();
+        $("select[name='project[area_id]'] option").remove();
+        var row = "<option value=\"" + "" + "\">" + "Nenhum cliente selecionado" + "</option>";
+        $(row).appendTo("select[name='project[contract_id]']");
+        $(row).appendTo("select[name='project[area_id]']");
+      } else {
+        $.ajax({
+          dataType: "json",
+          cache: false,
+          url: '/projects/get_contracts_by_client/',
+          data: {
+            client: $("select[name='project[corporation_id]']").val()
+          },
+          timeout: 5000,
+          success: function(data) {
+            $("select[name='project[contract_id]'] option").remove();
+            
+            if(data.length == 0) {
+              var row = "<option value=\"" + "" + "\">" + "Nenhum contrato associado ao cliente" + "</option>";
+              $(row).appendTo("select[name='project[contract_id]']");
+            } else {
+              var row = "<option value=\"" + "" + "\">" + "Selecione um contrato" + "</option>";
+              $(row).appendTo("select[name='project[contract_id]']");
+              
+              $.each(data, function(i, j) {
+                row = "<option value=\"" + j.id + "\">" + j.name + "</option>";
+                $(row).appendTo("select[name='project[contract_id]']");
+              });
+            }
+          },
+          error: function(XMLHttpRequest, errorTextStatus, error) {
+            alert("Failed to submit : " + errorTextStatus + " ;" + error);
+          }
+        });
+
+        $.ajax({
+          dataType: "json",
+          cache: false,
+          url: '/projects/get_areas_by_corporation/',
+          data: {
+            client: $("select[name='project[corporation_id]']").val()
+          },
+          timeout: 5000,
+          success: function(data) {
+            $("select[name='project[area_id]'] option").remove();
+            
+            if(data.length == 0) {
+              var row = "<option value=\"" + "" + "\">" + "Nenhuma área associada a empresa" + "</option>";
+              $(row).appendTo("select[name='project[area_id]']");
+            } else {
+              var row = "<option value=\"" + "" + "\">" + "Selecione uma área" + "</option>";
+              $(row).appendTo("select[name='project[area_id]']");
+              
+              $.each(data, function(i, j) {
+                row = "<option value=\"" + j.id + "\">" + j.name + "</option>";
+                $(row).appendTo("select[name='project[area_id]']");
+              });
+            }
+            
+          },
+          error: function(XMLHttpRequest, errorTextStatus, error) {
+            alert("Failed to submit : " + errorTextStatus + " ;" + error);
+          }
+        });
+      }
+    }
+
+
+
+
+
+
+
+
+    $("select[name='project[client_id]']").change(function(){
+      if ($(this).val() == '') {
+        $("select[name='project[contract_id]'] option").remove();
+        $("select[name='project[area_id]'] option").remove();
+        var row = "<option value=\"" + "" + "\">" + "Nenhum cliente selecionado" + "</option>";
+        $(row).appendTo("select[name='project[contract_id]']");
+        $(row).appendTo("select[name='project[area_id]']");
+      } else {
+        $.ajax({
+          dataType: "json",
+          cache: false,
+          url: '/projects/get_contracts_by_client/',
+          data: {
+            client: $(this).val()
+          },
+          timeout: 5000,
+          success: function(data) {
+            $("select[name='project[contract_id]'] option").remove();
+            
+            if(data.length == 0) {
+              var row = "<option value=\"" + "" + "\">" + "Nenhum contrato associado ao cliente" + "</option>";
+              $(row).appendTo("select[name='project[contract_id]']");
+            } else {
+              var row = "<option value=\"" + "" + "\">" + "Selecione um contrato" + "</option>";
+              $(row).appendTo("select[name='project[contract_id]']");
+              
+              $.each(data, function(i, j) {
+                row = "<option value=\"" + j.id + "\">" + j.name + "</option>";
+                $(row).appendTo("select[name='project[contract_id]']");
+              });
+            }
+          },
+          error: function(XMLHttpRequest, errorTextStatus, error) {
+            alert("Failed to submit : " + errorTextStatus + " ;" + error);
+          }
+        });
+
+        $.ajax({
+          dataType: "json",
+          cache: false,
+          url: '/projects/get_areas_by_client/',
+          data: {
+            client: $(this).val()
+          },
+          timeout: 5000,
+          success: function(data) {
+            $("select[name='project[area_id]'] option").remove();
+            
+            if(data.length == 0) {
+              var row = "<option value=\"" + "" + "\">" + "Nenhuma área associada a empresa" + "</option>";
+              $(row).appendTo("select[name='project[area_id]']");
+            } else {
+              var row = "<option value=\"" + "" + "\">" + "Selecione uma área" + "</option>";
+              $(row).appendTo("select[name='project[area_id]']");
+              
+              $.each(data, function(i, j) {
+                row = "<option value=\"" + j.id + "\">" + j.name + "</option>";
+                $(row).appendTo("select[name='project[area_id]']");
+              });
+            }
+            
+          },
+          error: function(XMLHttpRequest, errorTextStatus, error) {
+            alert("Failed to submit : " + errorTextStatus + " ;" + error);
+          }
+        });
+      }
+    });
+
+
+
+
+    function checkClient() {
+      if ($("select[name='project[client_id]']").val() == '') {
+        $("select[name='project[contract_id]'] option").remove();
+        $("select[name='project[area_id]'] option").remove();
+        var row = "<option value=\"" + "" + "\">" + "Nenhum cliente selecionado" + "</option>";
+        $(row).appendTo("select[name='project[contract_id]']");
+        $(row).appendTo("select[name='project[area_id]']");
+      } else {
+        $.ajax({
+          dataType: "json",
+          cache: false,
+          url: '/projects/get_contracts_by_client/',
+          data: {
+            client: $("select[name='project[client_id]']").val()
+          },
+          timeout: 5000,
+          success: function(data) {
+            $("select[name='project[contract_id]'] option").remove();
+            
+            if(data.length == 0) {
+              var row = "<option value=\"" + "" + "\">" + "Nenhum contrato associado ao cliente" + "</option>";
+              $(row).appendTo("select[name='project[contract_id]']");
+            } else {
+              var row = "<option value=\"" + "" + "\">" + "Selecione um contrato" + "</option>";
+              $(row).appendTo("select[name='project[contract_id]']");
+              
+              $.each(data, function(i, j) {
+                row = "<option value=\"" + j.id + "\">" + j.name + "</option>";
+                $(row).appendTo("select[name='project[contract_id]']");
+              });
+            }
+          },
+          error: function(XMLHttpRequest, errorTextStatus, error) {
+            alert("Failed to submit : " + errorTextStatus + " ;" + error);
+          }
+        });
+
+        $.ajax({
+          dataType: "json",
+          cache: false,
+          url: '/projects/get_areas_by_client/',
+          data: {
+            client: $("select[name='project[client_id]']").val()
+          },
+          timeout: 5000,
+          success: function(data) {
+            $("select[name='project[area_id]'] option").remove();
+            
+            if(data.length == 0) {
+              var row = "<option value=\"" + "" + "\">" + "Nenhuma área associada a empresa" + "</option>";
+              $(row).appendTo("select[name='project[area_id]']");
+            } else {
+              var row = "<option value=\"" + "" + "\">" + "Selecione uma área" + "</option>";
+              $(row).appendTo("select[name='project[area_id]']");
+              
+              $.each(data, function(i, j) {
+                row = "<option value=\"" + j.id + "\">" + j.name + "</option>";
+                $(row).appendTo("select[name='project[area_id]']");
+              });
+            }
+            
+          },
+          error: function(XMLHttpRequest, errorTextStatus, error) {
+            alert("Failed to submit : " + errorTextStatus + " ;" + error);
+          }
+        });
+      }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
   });
 </script>
