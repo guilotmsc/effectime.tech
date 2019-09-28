@@ -1,4 +1,3 @@
-
 <div class="row">
   <div class="col-sm-12">
     <h4 class="page-title">Contratos</h4>
@@ -42,7 +41,7 @@
             <div class="form-group clearfix">
               <label class="col-lg-2 control-label">CLIENTE *</label>
               <div class="col-lg-10">
-                <%= form.select(:corporation_id, Corporation.all.joins(:corporation_users).where("corporation_users.user_id = #{User.current.id} and corporation_type_id = 1").collect {|u| [u.name, u.id]}, {}, {class: "form-control select2"}) %>
+                <%= form.select(:corporation_id, Corporation.all.joins("inner join workspace_users on workspace_users.workspace_id = corporations.workspace_id").where("workspace_users.user_id = #{User.current.id} and corporation_type_id = 1").collect {|u| [u.name, u.id]}, {}, {class: "form-control select2"}) %>
               </div>
             </div>
             <div class="form-group clearfix">
