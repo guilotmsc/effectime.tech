@@ -2,14 +2,14 @@ class ProjectsController < ApplicationController
   before_action :set_project, only: [:show, :edit, :update, :destroy]
 
   def get_clients
-    @result = Corporation.joins(:corporation_users).where("corporation_users.user_id = #{User.current.id} and corporation_type_id = 1")
+    @result = Corporation.all.joins("inner join workspace_users on workspace_users.workspace_id = corporations.workspace_id").where("workspace_users.user_id = #{User.current.id} and corporation_type_id = 1")
     respond_to do |format|
       format.json { render :json => @result }
     end
   end 
 
   def get_corporations
-    @result = Corporation.joins(:corporation_users).where("corporation_users.user_id = #{User.current.id} and corporation_type_id = 2")
+    @result = Corporation.all.joins("inner join workspace_users on workspace_users.workspace_id = corporations.workspace_id").where("workspace_users.user_id = #{User.current.id} and corporation_type_id = 2")
 
     respond_to do |format|
       format.json { render :json => @result }

@@ -189,17 +189,17 @@ class AppointmentsController < ApplicationController
                     left outer join contracts c on c.id = p.contract_id
                     left outer join corporations c_corp on c.corporation_id = c_corp.id
                     left outer join corporations co on co.id = c.corporation_id")
-    @contracts = Contract.where("corporation_id in (select corporation_id from corporation_users where user_id = #{User.current.id})")
-    @projects = Project.where("corporation_id in (select corporation_id from corporation_users where user_id = #{User.current.id})")
+    @projects = Project.joins("inner join corporations on corporations.id = projects.corporation_id").where("corporations.workspace_id in (select workspace_id from workspace_users where user_id = #{User.current.id})")
     @process = ProcessDept.find_by_sql("select process_depts.* from process_depts
-                    inner join areas on process_depts.area_id = areas.id
-                    where areas.corporation_id in (select corporation_id from corporation_users where user_id = #{User.current.id})")
+                                        inner join areas on process_depts.area_id = areas.id
+                                        inner join corporations on corporations.id = areas.corporation_id
+                                        where corporations.workspace_id in (select workspace_id from workspace_users where user_id = #{User.current.id})")
     
     respond_to do |format|
       format.xlsx {
           response.headers[
             'Content-Disposition'
-          ] = "attachment; filename='index.xlsx'"
+          ] = "attachment; filename=registro-de-horas.xlsx"
         }
         format.html { render :index }
     end
