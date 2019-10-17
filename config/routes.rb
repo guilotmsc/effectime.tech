@@ -2,7 +2,11 @@ Rails.application.routes.draw do
   resources :clients
   resources :hours
   resources :corporation_types
-  resources :corporation_users
+  resources :corporation_users do
+    collection do 
+      get :create_corporation_user
+    end
+  end 
   resources :process_depts do 
     collection do
       get :create_process
@@ -48,48 +52,6 @@ Rails.application.routes.draw do
       get :create_area
       get :edit_area
       get :delete_area
-    end
-  end
-  resources :revenues do
-    collection do
-      post :registration
-      post :update_amount
-    end
-  end
-  resources :companies do
-    collection do
-      get :get_amounts
-      get :verify_registers
-      post :registration
-      post :save_and_create_company_users
-    end
-    member do
-      get :investments
-      get :financings
-      get :expenses
-      get :revenues
-      get :income_statements
-      get :companies_index
-      get :not_found
-    end
-  end
-  resources :expenses do
-    collection do
-      post :registration
-      post :update_amount
-    end
-  end
-  resources :financings do
-    collection do
-      post :registration
-      post :update_amount
-    end
-  end
-  resources :models
-  resources :investments do
-    collection do
-      post :registration
-      post :update_amount
     end
   end
   # devise_for :users

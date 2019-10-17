@@ -3,8 +3,8 @@ class CorporationsController < ApplicationController
 
   def get_users_by_corporation
     users = User.find_by_sql("select users.* from users 
-                                inner join corporation_users on corporation_users.corporation_id = #{params[:corporation_id]}
-                                where users.id <> #{User.current.id}")
+                              inner join corporation_users on corporation_users.user_id = users.id
+                              where corporation_users.corporation_id = #{params[:corporation_id]}")
 
     return render :json => users
   end

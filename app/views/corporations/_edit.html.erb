@@ -266,8 +266,6 @@ p {
 
   $(document).ready(function() {
 
-    
-
     !function($) {
     "use strict";
 
@@ -455,6 +453,7 @@ p {
 
 
 
+    getUsers();
 
     function getUsers() {
       $.ajax({
@@ -464,17 +463,26 @@ p {
           "corporation_id": <%= @corporation.id %>
         },
         success: function(data) {
+          let arr = [];
+
           for(let i = 0; i < data.length; i++) {
             let row = "";
             row = "<tr>\
               <th scope='row'>#</th>\
               <td>"+data[i].email+"</td>\
               <td><span class='label label-table label-primary'>Colaborador</span></td>\
-              <td></td>\
+              <td><button class='btn btn-icon waves-effect waves-light btn-danger btn-xs remove-user' title='Excluir' data-id='<%= data.id %>' data-confirm='Tem certeza que deseja remover este usuário?'><i class='fa fa-times'></i></button></td>\
             </tr>";
 
             $("#content-users").append(row);
+            arr.push(data[i].email);
           }
+
+          var newValue = arr.join(',');
+
+          jQuery("#emails_array").val(newValue);
+
+         
         },
         error: function (xhr, ajaxOptions, thrownError) {
           alert(xhr.responseText);
@@ -484,36 +492,43 @@ p {
     }
 
 
+    $("#remove_user").click(function(e) {
+      e.preventDefault();
+    })
+
+
     $("#add_user").click(function(e){
       e.preventDefault();
 
-      var oldValue = jQuery("#emails_array").val();
+      let oldValue = jQuery("#emails_array").val();
+      let arr = oldValue === "" ? [] : oldValue.split(',');
 
-      var arr = oldValue === "" ? [] : oldValue.split(',');
-      arr.push($("#email").val());
-      var newValue = arr.join(',');
-
-      jQuery("#emails_array").val(newValue);
-
-      var body = "<table class='table table-striped m-0'><thead><tr><th>#</th><th>Email</th>\
-                  <th>Tipo</th><th>Status</th></tr></thead><tbody id='content-users'></tbody></table>";
-
-      if (oldValue == '') {
-        $("#content-table").html(body);
+      if(arr.includes($("#email").val())) {
+        swal("Ops, usuário já adicionado!", "Esse usuário já está relacionado a esta empresa.", "error");
+        return;
       }
 
-      var row = "";
-      row = "<tr>\
-        <th scope='row'>#</th>\
-        <td>"+$("#email").val()+"</td>\
-        <td><span class='label label-table label-primary'>Colaborador</span></td>\
-        <td><span class='label label-table label-success'>Pendente</span></td>\
-      </tr>";
+      if($("#email").val() === '' || $("#email-confirm").val() === '') {
+        return;
+      }
 
-      //$("#content-users").append(row);
-
-      $("#email").val('');
-      $("#email-confirm").val('');
+      $.ajax({
+        type: "GET",
+        url: "/corporation_users/create_corporation_user",
+        data: {
+          "email": $("#email").val(),
+          "corporation_id": <%= @corporation.id %>
+        },
+        success: function(data) {
+          window.location.reload()
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+          alert(xhr.responseText);
+          alert(thrownError);
+          $("#email").val('');
+          $("#email-confirm").val('');
+        }
+      })
     })
 
     $('#inline-area').editable({

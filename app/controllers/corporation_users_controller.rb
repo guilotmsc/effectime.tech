@@ -1,6 +1,25 @@
 class CorporationUsersController < ApplicationController
   before_action :set_corporation_user, only: [:show, :edit, :update, :destroy]
 
+  def create_corporation_user
+    user = User.find_by_email(params[:email])
+    corporation = Corporation.find_by_id(params[:corporation_id])
+
+    if user.present?
+      check_corporation_user = CorporationUser.find_by_sql("select * from corporation_users where corporation_id = #{corporation.id} and user_id = #{user.id}")
+      
+      if !check_corporation_user.present?
+        CorporationInviteMailer.with(corporation: corporation, email: params[:email]).corporation_invite_email.deliver_now
+        CorporationUser.create(:user_id => user.id, :corporation_id => corporation.id, :admin => false)
+      end
+    else
+      user = User.invite!(:email => params[:email])
+      CorporationUser.create(:user_id => user.id, :corporation_id => corporation.id, :admin => false)
+    end
+
+    return render :json => user
+  end
+
   # GET /corporation_users
   # GET /corporation_users.json
   def index
