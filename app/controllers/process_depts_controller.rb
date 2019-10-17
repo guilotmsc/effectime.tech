@@ -20,6 +20,16 @@ class ProcessDeptsController < ApplicationController
     return render json: {}, status: 200
   end
 
+  def get_process_by_corporation
+    process = ProcessDept.find_by_sql("select distinct process_depts.* 
+                                      from process_depts 
+                                      inner join areas on process_depts.area_id in 
+                                      (select areas.id from areas where corporation_id = #{params[:id]})
+                                      order by id asc")
+
+    return render :json => process
+  end
+
   # GET /process_depts
   # GET /process_depts.json
   def index

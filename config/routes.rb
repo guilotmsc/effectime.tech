@@ -8,6 +8,7 @@ Rails.application.routes.draw do
       get :create_process
       get :edit_process
       get :delete_process
+      get :get_process_by_corporation
     end
   end
   resources :appointments do 
@@ -36,10 +37,14 @@ Rails.application.routes.draw do
     collection do 
       get :index_clients
       get :index_companies
+      get :get_users_by_corporation
     end
   end
   resources :areas do
     collection do
+      get :get_areas_by_corporation
+      get :create_area_exist_corporation
+      get :get_areas_by_client
       get :create_area
       get :edit_area
       get :delete_area

@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
 
   def set_layout
     if current_user.present?
-      cp = Company.all.joins(:company_users).where("companies.id = company_users.company_id and company_users.user_id = #{current_user.id}").first
+      cp = Corporation.all.joins(:corporation_users).where("corporations.id = corporation_users.corporation_id and corporation_users.user_id = #{current_user.id}").first
 
       if cp.present? || current_user.admin == true
         'application'

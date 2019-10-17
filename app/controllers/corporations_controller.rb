@@ -1,18 +1,18 @@
 class CorporationsController < ApplicationController
   before_action :set_corporation, only: [:show, :edit, :update, :destroy]
 
-  def index_clients
-    @corporations = Corporation.all.joins(:corporation_users).where("corporation_users.user_id = #{User.current.id} and corporation_type_id = 1")
-  end  
+  def get_users_by_corporation
+    users = User.find_by_sql("select users.* from users 
+                                inner join corporation_users on corporation_users.corporation_id = #{params[:corporation_id]}
+                                where users.id <> #{User.current.id}")
 
-  def index_companies
-    @corporations = Corporation.all.joins(:corporation_users).where("corporation_users.user_id = #{User.current.id} and corporation_type_id = 2")
-  end  
+    return render :json => users
+  end
 
   # GET /corporations
   # GET /corporations.json
   def index
-    @corporations = Corporation.all
+    @corporations = Corporation.all.joins(:corporation_users).where("corporation_users.user_id = #{User.current.id}")
   end
 
   # GET /corporations/1
@@ -28,6 +28,7 @@ class CorporationsController < ApplicationController
   # GET /corporations/1/edit
   def edit
     @areas = Area.all.where(corporation_id: params[:id])
+    @user_corporations = CorporationUser.all.where(corporation_id: params[:id])
   end
 
   # POST /corporations
@@ -47,8 +48,19 @@ class CorporationsController < ApplicationController
           emails = params[:emails_array].split(',')
 
           emails.each_with_index do |email, index|
-            user = User.invite!(:email => emails[index])
-            CorporationUser.create(:user_id => user.id, :corporation_id => @corporation.id, :admin => false)
+            check_user = User.find_by_email(emails[index])
+
+            if check_user.present?
+              check_corporation_user = CorporationUser.find_by_sql("select * from corporation_users where corporation_id = #{@corporation.id} and user_id = #{check_user.id}")
+              
+              if !check_corporation_user.present?
+                CorporationInviteMailer.with(corporation: @corporation, email: emails[index]).corporation_invite_email.deliver_now
+                CorporationUser.create(:user_id => check_user.id, :corporation_id => @corporation.id, :admin => false)
+              end
+            else
+              user = User.invite!(:email => emails[index])
+              CorporationUser.create(:user_id => user.id, :corporation_id => @corporation.id, :admin => false)
+            end
           end
         end
         
@@ -67,10 +79,10 @@ class CorporationsController < ApplicationController
     respond_to do |format|
       if @corporation.update(corporation_params)
         if @corporation.corporation_type_id == 1
-          format.html { redirect_to index_clients_corporations_path }
+          format.html { redirect_to corporations_path }
           format.json { head :no_content }  
         else
-          format.html { redirect_to index_companies_corporations_path }
+          format.html { redirect_to corporations_path }
           format.json { head :no_content }
         end
       else
@@ -86,10 +98,10 @@ class CorporationsController < ApplicationController
     @corporation.destroy
     respond_to do |format|
       if @corporation.corporation_type_id == 1
-        format.html { redirect_to index_clients_corporations_path }
+        format.html { redirect_to corporations_path }
         format.json { head :no_content }  
       else
-        format.html { redirect_to index_companies_corporations_path }
+        format.html { redirect_to corporations_path }
         format.json { head :no_content }
       end
     end

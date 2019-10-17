@@ -19,8 +19,6 @@
 
 .pipe-steps{
   height: 100%;
-  min-height: 416px;
-  max-height: 416px;
   padding: 5px !important;
 }
 
@@ -51,6 +49,7 @@
 .panel-title {
   text-align: center;
   color: black;
+  padding-bottom: 15px !important;
 }
 
 .editable-click {
@@ -63,9 +62,41 @@
   border-color: #5fbeaa;
 }
 
+div.control-group.form-group {
+  position: relative;
+  min-width: 100% !important;
+}
+
 p {
   margin: 1px 1px 1px
 }
+
+
+
+
+  .board {
+    min-height: 290px;
+    width: 107%;
+    overflow-x: scroll;
+  }
+  .columns-fixed {
+    height: 100%;
+    width: 500px;
+    white-space: nowrap;
+  }
+  .column {
+    vertical-align: top;
+    height: 100%;
+    display: inline-block;
+    width: 250px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .card {
+    height: 200px;
+    background: #F00;
+    margin-bottom: 5px;
+  }
 </style>
 
 <div class="row">
@@ -89,6 +120,7 @@ p {
     <div class="card-box">
       <div class="row">
         <%= form_with(model: corporation, local: true, :html => {id: "basic-form"}) do |form| %>
+          <%= form.hidden_field :corporation_type_id, id: :corporation_corporation_type_id, value: 2, required:true %>
           <div class="p-20">
             <h3>Dados da empresa</h3>
             
@@ -111,7 +143,7 @@ p {
               <div class="form-group clearfix">
                 <label class="col-lg-2 control-label" style="text-align: right;">CNPJ</label>
                 <div class="col-lg-10">
-                  <%= form.text_field :document, id: :corporation_document, class: "form-control", placeholder: "CNPJ" %> 
+                  <%= form.text_field :document, id: :corporation_document, class: "form-control", placeholder: "CNPJ", 'data-mask': "99.999.999/9999-99" %> 
                 </div>
               </div>
               <div class="form-group clearfix">
@@ -121,7 +153,7 @@ p {
                 </div>
                 <label class="col-lg-2 control-label" style="text-align: right;">TELEFONE</label>
                 <div class="col-lg-3">
-                  <%= form.text_field :phone, id: :corporation_phone, class: "form-control", placeholder: "Telefone" %> 
+                  <%= form.text_field :phone, id: :corporation_phone, class: "form-control", placeholder: "Telefone", 'data-mask': "(99) 9999-9999" %> 
                 </div>
               </div>
               <div class="form-group clearfix">
@@ -140,14 +172,18 @@ p {
               <p class="text-muted m-b-30 font-13">
                 Defina as áreas e processos pertencentes a sua empresa.
               </p>
-              <div id="content-areas" style="margin-left: -2% !important">
+              <div style="margin-left: -2% !important">
                 <div class="form-group clearfix">
-                  <div class="col-lg-3">
-                    <a href="#" class="btn btn-default waves-effect waves-light" id="inline-area" data-type="text" data-title="Nova área" data-value="">Nova área</a>
-                  </div>
                   
                   <%= hidden_field_tag :areas_array, '', id: :areas_array %>
                   
+                  <div class="col-lg-3" style="margin-bottom: 1%">
+                    <a href="#" style="width: 90%; margin-left: 1%;" class="btn btn-default waves-effect waves-light" id="inline-area" data-type="text" data-title="Nova área" data-value="">Nova área</a>
+                  </div>
+                  
+                  <div class="board">
+                    <div class="columns-fixed" id="content-areas">
+                  </div>
                 </div>
               </div>
             </section>
@@ -183,37 +219,6 @@ p {
               <div id="content-table"></div>
               <%= hidden_field_tag :emails_array, '', id: :emails_array %>
             </section>
-
-            <h3>Informações de contato</h3>
-            <section>
-              <p class="text-muted m-b-30 font-13">
-                Preencha as informações do contato referentes ao cliente.
-              </p>
-              <div class="form-group clearfix">
-                <label class="col-lg-2 control-label " for="userName">CONTATO *</label>
-                <div class="col-lg-10">
-                  <%= form.text_field :contact, id: :corporation_contact, class: "form-control", required:true, placeholder: "Pessoa de contato" %> 
-                </div>
-              </div>
-              <div class="form-group clearfix">
-                <label class="col-lg-2 control-label " for="userName">FUNÇÃO *</label>
-                <div class="col-lg-10">
-                  <%= form.text_field :role, id: :corporation_role, class: "form-control", required:true, placeholder: "Função" %> 
-                </div>
-              </div>
-              <div class="form-group clearfix">
-                <label class="col-lg-2 control-label ">TELEFONE *</label>
-                <div class="col-lg-10">
-                  <%= form.text_field :contact_phone, id: :corporation_contact_phone, class: "form-control", required:true, placeholder: "Telefone" %> 
-                </div>
-              </div>
-              <div class="form-group clearfix">
-                <label class="col-lg-2 control-label ">EMAIL *</label>
-                <div class="col-lg-10">
-                  <%= form.text_field :email, id: :corporation_email, class: "form-control", required:true, data: {'parsley-type' => 'email'}, placeholder: "Email" %>
-                </div>
-              </div>
-            </section>
           </div>
         </div>
       <% end %>
@@ -222,7 +227,78 @@ p {
 </div>
 
 <script type="text/javascript">
+
   $(document).ready(function() {
+
+    !function($) {
+    "use strict";
+
+    var SweetAlert = function() {};
+
+    SweetAlert.prototype.init = function() {
+      $("#content-areas").on('click', '.delete-area', function(event) {
+        
+        event.preventDefault();
+        
+        let area_id = this.id;
+
+        //Warning Message
+        swal({   
+            title: "Confirmar exclusão?",
+            text: "Ao remover uma área, seus processos são automaticamente removidos!",   
+            type: "error",   
+            showCancelButton: true,   
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Sim, remover!",
+            cancelButtonText: "Cancelar",
+            closeOnConfirm: false 
+        }, function(){
+          console.log(area_id);
+          $.ajax({
+            type: "GET",
+            url: "/areas/delete_area",
+            data: {
+              "id": area_id
+            },
+            success: function(data) {
+              $('[data-area-expand-id="' + area_id +'"]').remove();
+              swal("Pronto!", "Esse item foi removido com sucesso!", "success");
+            }
+          }); 
+        });
+      });
+
+      $("#content-areas").on('click', '.delete-process', function(event) {
+
+        event.preventDefault();
+        
+        let process_id = this.id;
+
+        //Warning Message
+        swal({   
+            title: "Confirmar exclusão?",   
+            text: "A exclusão de um processo não poderá ser desfeita!",   
+            type: "error",   
+            showCancelButton: true,   
+            confirmButtonColor: "#DD6B55",   
+            confirmButtonText: "Sim, remover!",
+            closeOnConfirm: false 
+        }, function(){
+          $.ajax({
+            type: "GET",
+            url: "/process_depts/delete_process",
+            data: {
+              "id": process_id
+            },
+            success: function(data) {
+              $('[data-process-id="' + process_id +'"]').remove();
+              swal("Pronto!", "Esse item foi removido com sucesso!", "success");
+            }
+          }); 
+        });
+      });
+    }
+
 
     $("#add_user").click(function(e){
       e.preventDefault();
@@ -230,6 +306,16 @@ p {
       var oldValue = jQuery("#emails_array").val();
 
       var arr = oldValue === "" ? [] : oldValue.split(',');
+
+      if(arr.includes($("#email").val())) {
+        swal("Ops, usuário já adicionado!", "Esse usuário já está relacionado a esta empresa.", "error");
+        return;
+      }
+
+      if($("#email").val() === '' || $("#email-confirm").val() === '') {
+        return;
+      }
+
       arr.push($("#email").val());
       var newValue = arr.join(',');
 
@@ -247,7 +333,7 @@ p {
         <th scope='row'>#</th>\
         <td>"+$("#email").val()+"</td>\
         <td><span class='label label-table label-primary'>Colaborador</span></td>\
-        <td><span class='label label-table label-danger'>Admin</span></td>\
+        <td><span class='label label-table label-success'>Pendente</span></td>\
       </tr>";
 
       $("#content-users").append(row);
@@ -275,18 +361,27 @@ p {
           "name": name
         },
         success: function(data) {
-          $("#content-areas").append("<div class='col-lg-3'>\
+          $("#content-areas").append("<div class='column' data-area-expand-id='" + data.id + "'>\
+          <div class='col-lg-3' style='width: 100%;margin-left: 1%;' data-area-id='" + data.id + "'>\
               <div class='panel panel-default'>\
                 <div class='panel-heading pipe-steps-title'>\
                   <div class='contact-action'>\
-                    <h4 class='panel-title'>"+data.name+"\
-                    </h4>\
-                    <div id='content-process-"+data.id+"'></div>\
+                    <div class='row'>\
+                      <div class='col-md-10'>\
+                        <h4 class='panel-title'><a href='#ç' class='popover-created-area'>"+data.name+"</a>\
+                        </h4>\
+                      </div>\
+                      <div class='col-md-2'>\
+                        <button id='" + data.id + "' class='btn btn-icon waves-effect waves-light btn-danger btn-xs delete-area'><i class='fa fa-times'></i></button></td>\
+                      </div>\
+                    </div>\
+                    <div id='content-process-" + data.id + "'></div>\
                     <div class='pipe-steps'>\
-                      <a href='#' class='btn btn-default waves-effect waves-light' id='inline-process-"+data.id+"' data-type='text' data-value=''>Add processo</a>\
+                      <a href='#' class='btn btn-default waves-effect waves-light' id='inline-process-" + data.id + "' data-type='text' data-value=''>Novo processo</a>\
                     </div>\
                   </div>\
                 </div>\
+              </div>  \
               </div>  \
             </div>");
 
@@ -305,6 +400,18 @@ p {
             }
           });
 
+          $('.popover-created-area').editable({
+             type: 'text',
+             pk: data.id,
+             name: 'area',
+             title: 'Editar area',
+             placement: 'bottom',
+             showbuttons: false,
+             success: function(response, newValue) {
+               edit_area(data.id, newValue);
+            }
+          });
+
           var oldValue = jQuery("#areas_array").val();
           var arr = oldValue === "" ? [] : oldValue.split(',');
           arr.push(data.id);
@@ -319,6 +426,26 @@ p {
       });
     }
 
+
+    function edit_area(area_id, name) {
+      $.ajax({
+        type: "GET",
+        url: "/areas/edit_area",
+        data: {
+          "area_id": area_id,
+          "name": name
+        },
+        success: function(data) {
+          
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+          alert(xhr.responseText);
+          alert(thrownError);
+        }
+      });
+    }
+
+
     function create_process(area_id, name) {
       $.ajax({
         type: "GET",
@@ -328,14 +455,32 @@ p {
           "name": name
         },
         success: function(data) {
-          $('#content-process-'+data.area_id).append("<div class='row card-sortable'>\
+          $('#content-process-'+data.area_id).append("<div class='row card-sortable' data-process-id='" + data.id + "'>\
                                                         <div class='panel deal-card' style='text-align: center'>\
-                                                          <p>" + data.name + "</p>\
+                                                          <div class='row'>\
+                                                            <div class='col-md-10'>\
+                                                              <p><a href='#' class='popover-created-process'>" + data.name + "</a></p>\
+                                                            </div>\
+                                                            <div class='col-md-2'>\
+                                                              <button id='" + data.id + "' class='btn btn-icon waves-effect waves-light btn-danger btn-xs delete-process'><i class='fa fa-times'></i></button></td>\
+                                                            </div>\
+                                                          </div>\
                                                         </div>\
                                                       </div>");
 
           $('#inline-process-'+data.area_id).editable('setValue', "");
           $('#inline-process-'+data.area_id).text("Novo processo");
+
+          $('.popover-created-process').editable({
+             type: 'text',
+             pk: data.id,
+             name: 'process',
+             title: 'Editar processo',
+             showbuttons: false,
+             success: function(response, newValue) {
+               edit_process(data.id, newValue);
+            }
+          });
         },
         error: function (xhr, ajaxOptions, thrownError) {
           alert(xhr.responseText);
@@ -343,5 +488,32 @@ p {
         }
       });
     }
+
+    function edit_process(process_id, name) {
+      $.ajax({
+        type: "GET",
+        url: "/process_depts/edit_process",
+        data: {
+          "process_id": process_id,
+          "name": name
+        },
+        success: function(data) {
+          
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+          alert(xhr.responseText);
+          alert(thrownError);
+        }
+      });
+    }
+
+    $.SweetAlert = new SweetAlert, $.SweetAlert.Constructor = SweetAlert
+    }(window.jQuery),
+
+    //initializing 
+    function($) {
+        "use strict";
+        $.SweetAlert.init()
+    }(window.jQuery);
   });
 </script>

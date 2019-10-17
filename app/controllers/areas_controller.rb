@@ -1,6 +1,12 @@
 class AreasController < ApplicationController
   before_action :set_area, only: [:show, :edit, :update, :destroy]
 
+  def create_area_exist_corporation
+    area = Area.create(:name => params[:name], :corporation_id => params[:corporation_id])
+
+    return render :json => area
+  end
+
   def create_area
     area = Area.create(:name => params[:name])
 
@@ -19,6 +25,16 @@ class AreasController < ApplicationController
 
     return render json: {}, status: 200
   end 
+
+  def get_areas_by_corporation
+    areas = Area.find_by_sql("select * from areas where corporation_id = #{params[:id]}")
+
+    return render :json => areas
+  end
+
+  def get_areas_by_client
+
+  end
 
   # GET /areas
   # GET /areas.json

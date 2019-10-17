@@ -1,0 +1,147 @@
+
+<div class="row">
+  <div class="col-sm-12">
+    <ol class="breadcrumb">
+      <li>
+        <%= link_to root_path do %>Início<% end %>
+      </li>
+      <li>
+        <%= link_to index_companies_corporations_path do %>Empresas<% end %>
+      </li>
+      <li class="active">
+        Editar
+      </li>
+    </ol>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4>#<%= @corporation.id %> - <%= @corporation.name %></h4>
+      </div>
+      <div class="panel-body">
+                                        <!-- <div class="clearfix">
+                                            <div class="pull-left">
+                                                <h4 class="text-right"><img src="assets/images/logo_dark.png" alt="velonic"></h4>
+                                                
+                                            </div>
+                                            <div class="pull-right">
+                                                <h4>Invoice # <br>
+                                                    <strong>2015-04-23654789</strong>
+                                                </h4>
+                                            </div>
+                                        </div> -->
+        <!-- <hr> -->
+        <div class="row">
+          <div class="col-md-12">                      
+            <div class="pull-left m-t-30">
+              <address>
+                <strong>Endereço: <%= @corporation.address %></strong><br>
+                        Cidade: <%= @corporation.city %><br>
+                        Estado: <%= @corporation.state %><br>
+                        Telefone: (123) 456-7890
+              </address>
+            </div>
+            <div class="pull-right m-t-30">
+              <p><strong>Data de criação: </strong> <%= @corporation.created_at.strftime("%d/%m/%Y %H:%M") %></p>
+              <!-- <p class="m-t-10"><strong>Order Status: </strong> <span class="label label-pink">Pending</span></p>
+              <p class="m-t-10"><strong>Order ID: </strong> #123456</p> -->
+            </div>
+          </div>
+        </div>
+        <div class="m-h-50"></div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="p-20">
+            <h4 class="m-t-0 header-title"><b>Áreas</b></h4>
+            <p class="text-muted font-13">
+              Áreas relacionadas a empresa
+            </p>
+            <div class="table-responsive">
+              <table class="table table-bordered m-0">
+                <thead>
+                  <tr>
+                    <th width="10">#</th>
+                    <th width="1000">Área</th>
+                    <th width="10">Processos</th>
+                    <th width="10"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @areas.each do |a| %>
+                    <tr>
+                      <td><%= a.id %></td>
+                      <td><%= a.name %></td>
+                      <td><%= a.process_depts.count %></td>
+                      <td>
+                        <%= link_to '<i class="fa fa-pencil"></i>'.html_safe, edit_area_path(a), class: 'btn btn-icon waves-effect waves-light btn-primary btn-xs', title: 'Editar' %>
+                      </td>
+                    </tr>
+                  </tbody>
+                <% end %>
+              </table>
+            </div>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="p-20">
+            <h4 class="m-t-0 header-title"><b>Membros</b></h4>
+            <p class="text-muted font-13">
+              Membros colaboradores da empresa
+            </p>
+            <div class="table-responsive">
+              <table class="table table-bordered m-0">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Usuário</th>
+                    <th>Email</th>
+                    <th>Permissão</th>
+                    <th>Status</th>
+                    <th>Membro desde</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @corporation.corporation_users.each do |cp| %>
+                    <tr>
+                      <td><%= cp.user.id %></td>
+                      <td><%= cp.user.username %></td>
+                      <td><%= cp.user.email %></td>
+                      <td>
+                        <% if cp.admin? %>
+                          <span class='label label-table label-success'>Administrador</span>
+                        <% else %>
+                          <span class='label label-table label-primary'>Colaborador</span>
+                        <% end %>
+                      </td>
+                      <td>
+                        <% if cp.user.invitations_count > 0 %>
+                          <span class='label label-table label-success'>Ativo</span>
+                        <% else %>
+                          <span class='label label-table label-danger'>Pendente</span>
+                        <% end %>
+                      </td>
+                      <td><%= cp.user.invitation_accepted_at.strftime("%d/%m/%Y") unless cp.user.invitation_accepted_at.blank? %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          </div>
+        </div>
+        <hr>
+        <div class="hidden-print">
+          <div class="pull-right">
+            <%= link_to index_companies_corporations_path, class: "btn btn-white waves-effect waves-light" do %>
+              Voltar
+            <% end %>
+            <button type="submit" class="btn btn-default waves-effect waves-light">Salvar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -56,7 +56,7 @@ class CorporationUsersController < ApplicationController
   def destroy
     @corporation_user.destroy
     respond_to do |format|
-      format.html { redirect_to corporation_users_url, notice: 'Corporation user was successfully destroyed.' }
+      format.html { redirect_to edit_corporation_path(@corporation_user.corporation_id), notice: 'Corporation user was successfully destroyed.' }
       format.json { head :no_content }
     end
   end

@@ -1,4 +1,10 @@
-<!-- <div class="row">
+<style type="text/css">
+  .last-collumn {
+    width: 75px !important
+  }
+</style>
+
+<div class="row">
   <div class="col-sm-12">
     <h4 class="page-title">Empresas</h4>
     <ol class="breadcrumb">
@@ -31,7 +37,7 @@
             <th>Endereço</th>
             <th>Cidade</th>
             <th>Estado</th>
-            <th></th>
+            <th class="last-collumn"></th>
           </tr>
         </thead>
         <tbody>
@@ -42,7 +48,7 @@
               <td><%= corporation.address %></td> 
               <td><%= corporation.city %></td> 
               <td><%= corporation.state %></td>
-              <td>
+              <td class="last-collumn">
                 <%= link_to '<i class="fa fa-pencil"></i>'.html_safe, edit_corporation_path(corporation), class: 'btn btn-icon waves-effect waves-light btn-primary btn-xs', title: 'Editar' %>
                 <%= link_to '<i class="fa fa-times"></i>'.html_safe, corporation, method: :delete, data: { confirm: 'Ao remover uma empresa, registros de projetos e colaboradores vinculados a ela também serão removidos. Confirmar exclusão?' }, class: 'btn btn-icon waves-effect waves-light btn-danger btn-xs', title: 'Excluir' %></td>
             </tr>
@@ -51,4 +57,4 @@
       </table>
     </div>
   </div>
-</div> -->
+</div>

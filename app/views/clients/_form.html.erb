@@ -116,11 +116,16 @@ p {
             <h3>Dados do cliente</h3>
             
             <section>
-              <% corp = CorporationUser.find_by_user_id(18) %>
-              <%= form.text_field :corporation_id, id: :client_corporation_id, value: corp.corporation_id, required:true %>
+              
               <p class="text-muted m-b-30 font-13">
                 Preencha as informações principais do cliente. Todos os campos obrigatórios devem estar preenchidos.
               </p>
+              <div class="form-group clearfix">
+                <label class="col-lg-2 control-label" style="text-align: right;">EMPRESA *</label>
+                <div class="col-lg-10">
+                  <%= form.select(:corporation_id, Corporation.all.joins("inner join corporation_users on corporation_users.corporation_id = corporations.id").where("corporation_users.user_id = #{User.current.id}").collect {|u| [u.name, u.id]}, {}, {class: "form-control select2"}) %>
+                </div>
+              </div>
               <div class="form-group clearfix">
                 <label class="col-lg-2 control-label" style="text-align: right;">NOME *</label>
                 <div class="col-lg-10">
@@ -258,7 +263,7 @@ p {
           }); 
         });
       });
-       $("#content-areas").on('click', '.delete-process', function() {
+       $("#content-areas").on('click', '.delete-process', function(event) {
 
         event.preventDefault();
         

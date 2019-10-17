@@ -1,3 +1,9 @@
+<style type="text/css">
+  .last-collumn {
+    width: 75px !important
+  }
+</style>
+
 <div class="row">
   <div class="col-sm-12">
     <h4 class="page-title">Contratos</h4>
@@ -35,7 +41,7 @@
               <th width="100">Volume de horas</th>
               <th width="200">Tipo</th>
               <th width="200">Modelo</th>
-              <th width="10"></th>
+              <th width="10" class="last-collumn"></th>
             </tr>
           </thead>
           <tbody>
@@ -48,7 +54,7 @@
                 <td width="100"><%= contract.hours_volume %></td> 
                 <td width="200"><%= contract.contract_type %></td>
                 <td width="200"><%= contract.attribuition_model %></td>
-                <td align="center">
+                <td align="center" class="last-collumn">
                   <%= link_to '<i class="fa fa-pencil"></i>'.html_safe, edit_contract_path(contract), class: 'btn btn-icon waves-effect waves-light btn-primary btn-xs', title: 'Editar' %>
                   <%= link_to '<i class="fa fa-times"></i>'.html_safe, contract, method: :delete, data: { confirm: 'Ao remover um contrato, registros de compromissos vinculados a ele também serão removidos. Confirmar exclusão?' }, class: 'btn btn-icon waves-effect waves-light btn-danger btn-xs', title: 'Excluir' %></td>
               </tr>
