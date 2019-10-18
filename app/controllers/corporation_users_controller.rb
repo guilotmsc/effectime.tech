@@ -20,6 +20,13 @@ class CorporationUsersController < ApplicationController
     return render :json => user
   end
 
+  def delete_corporation_user
+    corporation_user = CorporationUser.find(params[:id])
+    corporation_user.destroy
+
+    return render json: {}, status: 200
+  end
+
   # GET /corporation_users
   # GET /corporation_users.json
   def index

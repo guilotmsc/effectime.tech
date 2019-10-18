@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   resources :corporation_users do
     collection do 
       get :create_corporation_user
+      get :delete_corporation_user 
     end
   end 
   resources :process_depts do 

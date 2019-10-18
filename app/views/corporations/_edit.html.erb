@@ -227,29 +227,11 @@ p {
                     <tr>
                       <th>#</th>
                       <th>Email</th>
-                      <th>Tipo</th>
+                      <th>Membro desde</th>
                       <th class="last-collumn"></th>
                     </tr>
                   </thead>
                   <tbody id='content-users'>
-                    <% @user_corporations.each do |user| %>
-                      <tr>
-                        <th scope='row'>#</th>
-                        <td><%= user.user.email %></td>
-                        <td>
-                          <% if user.admin == true %>
-                            <span class='label label-table label-success'>Admin</span>
-                          <% else %>
-                            <span class='label label-table label-primary'>Colaborador</span>
-                          <% end %>
-                        </td>
-                        <td>
-                          <% if user.user_id != User.current.id %>
-                          <%= link_to '<i class="fa fa-times"></i>'.html_safe, user, method: :delete, data: { confirm: 'Tem certeza que deseja remover este usuário?' }, class: 'btn btn-icon waves-effect waves-light btn-danger btn-xs', title: 'Excluir' %>
-                          <% end %>
-                        </td>
-                      </tr>
-                    <% end %>
                   </tbody>
                 </table>
               </div>
@@ -467,12 +449,18 @@ p {
 
           for(let i = 0; i < data.length; i++) {
             let row = "";
-            row = "<tr>\
+            row = "<tr data-user-expand-id="+data[i].corporation_users_id+">\
               <th scope='row'>#</th>\
               <td>"+data[i].email+"</td>\
-              <td><span class='label label-table label-primary'>Colaborador</span></td>\
-              <td><button class='btn btn-icon waves-effect waves-light btn-danger btn-xs remove-user' title='Excluir' data-id='<%= data.id %>' data-confirm='Tem certeza que deseja remover este usuário?'><i class='fa fa-times'></i></button></td>\
-            </tr>";
+              <td><span class='label label-table label-primary'>"+formatDate(new Date(data[i].created_at))+"</span></td>";
+
+            if (data[i].admin != true) {
+              row += "<td><button class='btn btn-icon waves-effect waves-light btn-danger btn-xs remove-user' title='Excluir' data-id="+data[i].corporation_users_id+" data-email="+data[i].email+"><i class='fa fa-times'></i></button></td>";
+            } else {
+              row += "<td><span class='label label-table label-success'>Admin</span></td>";
+            }
+              
+            row += "</tr>";
 
             $("#content-users").append(row);
             arr.push(data[i].email);
@@ -482,7 +470,6 @@ p {
 
           jQuery("#emails_array").val(newValue);
 
-         
         },
         error: function (xhr, ajaxOptions, thrownError) {
           alert(xhr.responseText);
@@ -492,13 +479,59 @@ p {
     }
 
 
-    $("#remove_user").click(function(e) {
-      e.preventDefault();
+    $("#content-users").on('click', '.remove-user', function(event) {
+      event.preventDefault();
+
+      let corporation_user_id = $(this).attr('data-id');
+      let corporation_user_email = $(this).attr('data-email');
+      
+      swal({   
+          title: "Confirmar exclusão?",
+          text: "Deseja remover as permissões desse usuário?",   
+          type: "error",
+          showCancelButton: true,   
+          confirmButtonColor: "#DD6B55",
+          confirmButtonText: "Sim, remover!",
+          cancelButtonText: "Cancelar",
+          closeOnConfirm: false
+      }, function(){
+
+        console.log(corporation_user_id)
+        $.ajax({
+          type: "GET",
+          url: "/corporation_users/delete_corporation_user",
+          data: {
+            "id": corporation_user_id
+          },
+          success: function(data) {
+            $('[data-user-expand-id="' + corporation_user_id +'"]').remove();
+            
+            var oldValue = jQuery("#emails_array").val();
+            var arr = oldValue === "" ? [] : oldValue.split(',');
+            arr = arr.filter(e => e !== corporation_user_email);
+            var newValue = arr.join(',');
+            jQuery("#emails_array").val(newValue);
+            
+            
+            swal("Pronto!", "Usuário desvinculado com sucesso!", "success");
+          }
+        }); 
+      });
     })
+
+
+
+
+
+
+
 
 
     $("#add_user").click(function(e){
       e.preventDefault();
+
+      $(this).prop("disabled",true);
+      $(this).html('Aguarde...');
 
       let oldValue = jQuery("#emails_array").val();
       let arr = oldValue === "" ? [] : oldValue.split(',');
@@ -520,7 +553,36 @@ p {
           "corporation_id": <%= @corporation.id %>
         },
         success: function(data) {
-          window.location.reload()
+          console.log(data)
+          let row = "";
+
+          row = "<tr data-user-expand-id="+data.corporation_users_id+">\
+            <th scope='row'>#</th>\
+            <td>"+data.email+"</td>\
+            <td><span class='label label-table label-primary'>"+formatDate(new Date(data.created_at))+"</span></td>";
+
+          if (data.admin != true) {
+            row += "<td><button class='btn btn-icon waves-effect waves-light btn-danger btn-xs remove-user' title='Excluir' data-id="+data.corporation_users_id+"><i class='fa fa-times'></i></button></td>";
+          } else {
+            row += "<td></td>";
+          }
+            
+          row += "</tr>";
+
+          $("#content-users").append(row);
+
+          var oldValue = jQuery("#emails_array").val();
+          var arr = oldValue === "" ? [] : oldValue.split(',');
+          arr.push(data.email);
+          var newValue = arr.join(',');
+          jQuery("#emails_array").val(newValue);
+
+          swal("Pronto!", "Usuário adicionado com sucesso!", "success");
+          $("#add_user").prop("disabled",false);
+          $("#add_user").html('Adicionar');
+
+          $("#email").val('');
+          $("#email-confirm").val('');
         },
         error: function (xhr, ajaxOptions, thrownError) {
           alert(xhr.responseText);
