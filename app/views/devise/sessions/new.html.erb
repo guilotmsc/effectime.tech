@@ -9,6 +9,10 @@
 
     <div class="panel-body">
       <%= form_for(resource, as: resource_name,:html => {:class => 'form-horizontal m-t-20'}, url: session_path(resource_name)) do |f| %>
+        <% if devise_error_messages! %>
+          <p class="alert alert-danger"><%= devise_error_messages! %> </p>
+        <% end %>
+
         <% if alert %>
           <p class="alert alert-danger"><%= alert %></p>
         <% end %>

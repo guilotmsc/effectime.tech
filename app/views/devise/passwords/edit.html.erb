@@ -3,13 +3,20 @@
 <div class="wrapper-page">
   <div class=" card-box">
     <div class="panel-heading">
-      <h3 class="text-center"> Crie uma nova senha<strong class="text-custom"></strong> </h3>
+      <h3 class="text-center"> Effec<strong class="text-custom">time</strong> </h3>
+      <h4 class="text-center"> Crie uma nova senha</h4>
     </div>
 
     <div class="panel-body">
       <%= form_for resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :put, :class => 'form-horizontal m-t-20' } do |f| %>
 
-        <%= devise_error_messages! %> 
+        <% if devise_error_messages! %>
+          <p class="alert alert-danger"><%= devise_error_messages! %> </p>
+        <% end %>
+
+        <% if alert %>
+          <p class="alert alert-danger"><%= alert %></p>
+        <% end %>
  
         <div class="form-group">
           <div class="col-xs-12">
