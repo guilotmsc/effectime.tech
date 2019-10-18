@@ -120,7 +120,7 @@
                           ['Trimestral'],
                           ['Semestral'],
                           ['Anual'] ],
-                          { :selected => 'Mensal', :include_blank => false }, { class: 'form-control attribuition_model' }) %>
+                          { :selected => @contract.attribuition_model, :include_blank => false }, { class: 'form-control attribuition_model' }) %>
               </div>
             </div>
             <div class="form-group clearfix" id="week_day">
@@ -299,6 +299,14 @@
         $("#week_day").hide();
       }
     })
+
+    if($('select[name="contract[attribuition_model]"]').val() == 'Semanal' || $('select[name="contract[attribuition_model]"]').val() == 'Quinzenal') {
+      $("#week_day").show();
+      $("#month_day").hide();
+    } else {
+      $("#month_day").show();
+      $("#week_day").hide();
+    }
 
 
 
@@ -567,6 +575,7 @@
 
 
       $('select[name="contract[attribuition_model]"], select[name="contract[attribuition_model_week_day]"], select[name="contract[attribuition_model_invalid_day]"]').attr("disabled", true);
+      $('select[name="contract[attribuition_model]"], select[name="contract[attribuition_model_week_day]"], select[name="contract[attribuition_model_invalid_day]"]').prop('selectedIndex', 0);
       $("#contract_total").attr("disabled", true);
       $("#contract_amount_ticket").attr("disabled", false);
       $("#contract_recurring_amount_ticket").attr("disabled", true)
@@ -596,6 +605,7 @@
 
 
       $('select[name="contract[attribuition_model]"], select[name="contract[attribuition_model_week_day]"], select[name="contract[attribuition_model_invalid_day]"]').attr("disabled", true);
+      $('select[name="contract[attribuition_model]"], select[name="contract[attribuition_model_week_day]"], select[name="contract[attribuition_model_invalid_day]"]').prop('selectedIndex', 0);
       $("#contract_total").attr("disabled", false);
       $("#contract_amount_ticket, #contract_recurring_amount_ticket").attr("disabled", true)
     }
@@ -611,7 +621,6 @@
 
       $("#pag_dois_produtos :input").attr("required", false);
       $("#pag_dois_assinaturas_sec_um :input").attr("required", true);
-      $("#pag_dois_assinaturas_sec_dois :input").attr("required", true);
       $("#pag_dois_assinaturas_sec_tres :input").attr("required", true);
       $("#pag_tres_produtos :input").attr("required", false);
       $("#pag_tres_assinaturas :input").attr("required", true);
@@ -648,6 +657,7 @@
 
 
       $('select[name="contract[attribuition_model]"], select[name="contract[attribuition_model_week_day]"], select[name="contract[attribuition_model_invalid_day]"]').attr("disabled", false);
+      $('select[name="contract[attribuition_model]"], select[name="contract[attribuition_model_week_day]"], select[name="contract[attribuition_model_invalid_day]"]').prop('selectedIndex', 0);
       $("#contract_amount_ticket, #contract_recurring_amount_ticket").attr("disabled", true)
       $("#contract_total").attr("disabled", false);
     }

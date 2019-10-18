@@ -14,6 +14,7 @@ Rails.application.routes.draw do
       get :edit_process
       get :delete_process
       get :get_process_by_corporation
+      get :get_process_by_client
     end
   end
   resources :appointments do 

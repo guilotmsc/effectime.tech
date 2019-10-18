@@ -19,7 +19,7 @@
   <body class="widescreen fixed-left-void">
     <% if user_signed_in? %> 
       <div id="wrapper" class="enlarged forced"> 
-        <div class="topbar" style="background-color: red">
+        <div class="topbar">
           <div class="topbar-left">
             <div class="text-center">
               
@@ -33,7 +33,7 @@
               <div class="">
                 <ul class="nav navbar-nav navbar-right pull-right">
                   <li class="dropdown">
-                    <a href="" class="dropdown-toggle profile" data-toggle="dropdown" aria-expanded="true" style="background-color: #69535c">
+                    <a href="" class="dropdown-toggle profile" data-toggle="dropdown" aria-expanded="true" style="padding-top: 3%; height: 70px; background-color: #69535c">
                       <%= current_user.email %><i style="margin-left: 15px" class="icon-settings"></i>
                     </a>
                     <ul class="dropdown-menu">
@@ -54,26 +54,61 @@
           <div class="sidebar-inner slimscrollleft">
             <div id="sidebar-menu">
               <ul>
-                <li>
-                  <%= link_to corporations_path, class: "waves-effect" do %>
-                    <i class="fa fa-building"></i><span>Empresas</span>
-                  <% end %>
+                <li class="has_sub">
+                    <%= link_to corporations_path, class: "waves-effect" do %>
+                      <i class="fa fa-building"></i><span>Ver todas</span>
+                    <% end %>
+                    <ul class="list-unstyled">
+                      <%= link_to new_corporation_path, class: "waves-effect" do %>
+                        Nova empresa
+                      <% end %>
+                    </ul>
                 </li>
-                <li>
+
+                <li class="has_sub">
                   <%= link_to clients_path, class: "waves-effect" do %>
-                    <i class="fa fa-user"></i><span>Clientes</span>
+                    <i class="fa fa-user"></i><span>Ver todos</span>
                   <% end %>
+                  <ul class="list-unstyled">
+                    <%= link_to new_client_path, class: "waves-effect" do %>
+                      Novo cliente
+                    <% end %>
+                  </ul>
                 </li>
-                <li>
+
+                <li class="has_sub">
+                  <%= link_to clients_path, class: "waves-effect" do %>
+                    <i class="fa fa-building"></i><span>Ver todos</span>
+                  <% end %>
+                  <ul class="list-unstyled">
+                    <%= link_to new_client_path, class: "waves-effect" do %>
+                      Novo cliente
+                    <% end %>
+                  </ul>
+                </li>
+
+                <li class="has_sub">
                   <%= link_to contracts_path, class: "waves-effect" do %>
-                    <i class="fa fa-file-text"></i><span>Contratos</span>
+                    <i class="fa fa-file-text"></i><span>Ver todos</span>
                   <% end %>
+                  <ul class="list-unstyled">
+                    <%= link_to new_contract_path, class: "waves-effect" do %>
+                      Novo contrato
+                    <% end %>
+                  </ul>
                 </li>
-                <li>
+
+                <li class="has_sub">
                   <%= link_to projects_path, class: "waves-effect" do %>
-                    <i class="fa fa-area-chart"></i><span>Projetos</span>
+                    <i class="fa fa-area-chart"></i><span>Ver todos</span>
                   <% end %>
+                  <ul class="list-unstyled">
+                    <%= link_to new_project_path, class: "waves-effect" do %>
+                      Novo projeto
+                    <% end %>
+                  </ul>
                 </li>
+                
                 <li>
                   <%= link_to appointments_path, class: "waves-effect" do %>
                     <i class="fa fa-calendar"></i><span>Agenda</span>

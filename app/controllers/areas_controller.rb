@@ -33,7 +33,9 @@ class AreasController < ApplicationController
   end
 
   def get_areas_by_client
+    areas = Area.find_by_sql("select * from areas where client_id = #{params[:id]}")
 
+    return render :json => areas
   end
 
   # GET /areas

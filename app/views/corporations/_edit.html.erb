@@ -538,10 +538,14 @@ p {
 
       if(arr.includes($("#email").val())) {
         swal("Ops, usuário já adicionado!", "Esse usuário já está relacionado a esta empresa.", "error");
+        $("#add_user").prop("disabled",false);
+        $("#add_user").html('Adicionar');
         return;
       }
 
       if($("#email").val() === '' || $("#email-confirm").val() === '') {
+        $("#add_user").prop("disabled",false);
+        $("#add_user").html('Adicionar');
         return;
       }
 
@@ -613,7 +617,7 @@ p {
           "name": name
         },
         success: function(data) {
-          $("#content-areas").append("<div class='column'>\
+          $("#content-areas").append("<div class='column' data-area-expand-id='" + data.id + "'>\
           <div class='col-lg-3' style='width: 100%;margin-left: 1%;' data-area-id='" + data.id + "'>\
               <div class='panel panel-default'>\
                 <div class='panel-heading pipe-steps-title'>\
