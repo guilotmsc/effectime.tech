@@ -9,7 +9,7 @@
 
     <div class="panel-body">
       <%= form_for(resource, as: resource_name,:html => {:class => 'form-horizontal m-t-20'}, url: session_path(resource_name)) do |f| %>
-        <% if alert %>
+        <% if alert && alert != 'Se você já possui cadastro, informe seus dados para continuar' %>
           <p class="alert alert-danger"><%= alert %></p>
         <% end %>
         

@@ -11,8 +11,8 @@
     <div class="panel-body">
       <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
         
-        <% if alert %>
-          <p class="alert alert-danger"><%= alert %></p>
+        <% if devise_error_messages! != '' %>
+          <p class="alert alert-danger">Email não encontrado</p>
         <% end %>
 
         <div class="form-group ">

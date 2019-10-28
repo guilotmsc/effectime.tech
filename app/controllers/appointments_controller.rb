@@ -81,18 +81,17 @@ class AppointmentsController < ApplicationController
 
   def list_appointment
     # appointments = Appointment.all.where(["appointments.employee_id = :employee_id and canceled = :canceled", { employee_id: User.current.id, canceled: false }])
-    appointments = Appointment.joins("left outer join contracts on appointments.contract_id = contracts.id
-                                      left outer join projects on appointments.project_id = projects.id
-                                      left outer join process_depts on appointments.process_dept_id = projects.id")
+    appointments = Appointment.joins("left outer join projects on appointments.project_id = projects.id
+                                      left outer join process_depts on appointments.process_dept_id = process_depts.id")
                   .select("appointments.*, 
-                          case when appointments.contract_id is null and appointments.project_id is null then 
-                                process_depts.name 
-                               when appointments.contract_id is null and appointments.process_dept_id is null then 
+                          case when appointments.project_id is null then 
+                                process_depts.name
+                               when appointments.process_dept_id is null then 
                                 projects.name
-                               when appointments.project_id is null and appointments.process_dept_id is null then 
-                                contracts.name
                           end as name").
-                  where(["appointments.user_id = :user_id and canceled = :canceled", { user_id: User.current.id, canceled: false }])
+                  where(["appointments.user_id = :user_id", { user_id: User.current.id }])
+
+                  #where(["appointments.user_id = :user_id and canceled = :canceled", { user_id: User.current.id, canceled: false }])
 
     # appointments = Appointment.joins("left outer join contracts on appointments.contract_id = contracts.id
     #                                left outer join projects on appointments.project_id = projects.id")
@@ -169,26 +168,22 @@ class AppointmentsController < ApplicationController
     @appExport = Appointment.find_by_sql("
                     select 
                       pj_corp.name as pc_id,
-                      c_corp.name as c_id,
-                      co.name as co_id,
-                      c.name as corporacao,
-                      co.name as contrato,
+                      pd_corp.name as pd_id,
                       pj.name as projeto,
                       pj_area.name as area,
                       pd.name as processo,
                       u.username as usuario,
                       TO_CHAR(start_moment, 'dd/mm/yyyy') as date,
-                      TO_CHAR(start_moment, 'HH:mi') as inicio,
-                      TO_CHAR(end_moment, 'HH:mi') as termino  
+                      TO_CHAR(start_moment, 'HH24:mi') as inicio,
+                      TO_CHAR(end_moment, 'HH24:mi') as termino  
                     from appointments p 
                     inner join users u on u.id = #{User.current.id}
                     left outer join process_depts pd on pd.id = p.process_dept_id
                     left outer join projects pj on pj.id = p.project_id
                     left outer join areas pj_area on pj_area.id = pj.area_id
                     left outer join corporations pj_corp on pj.corporation_id = pj_corp.id
-                    left outer join contracts c on c.id = p.contract_id
-                    left outer join corporations c_corp on c.corporation_id = c_corp.id
-                    left outer join corporations co on co.id = c.corporation_id")
+                    left outer join areas area_pd on area_pd.id = pd.area_id
+                    left outer join corporations pd_corp on area_pd.corporation_id = pd_corp.id")
     @contracts = Contract.where("corporation_id in (select corporation_id from corporation_users where user_id = #{User.current.id})")
     @projects = Project.where("corporation_id in (select corporation_id from corporation_users where user_id = #{User.current.id})")
     @process = ProcessDept.find_by_sql("select process_depts.* from process_depts
@@ -199,7 +194,7 @@ class AppointmentsController < ApplicationController
       format.xlsx {
           response.headers[
             'Content-Disposition'
-          ] = "attachment; filename='index.xlsx'"
+          ] = "attachment; filename=registro-de-horas.xlsx"
         }
         format.html { render :index }
     end

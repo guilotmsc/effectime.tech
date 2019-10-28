@@ -178,9 +178,13 @@ $(document).ready(function() {
             // make the event draggable using jQuery UI
             $(this).draggable({
                 zIndex: 999,
+                scroll: false,
+                helper: 'clone',
                 revert: true,      // will cause the event to go back to its
                 revertDuration: 0  //  original position after the drag
             });
+
+            $(this).css("width", '100%')
         });
     }
     /* Initializing */

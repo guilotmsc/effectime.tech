@@ -3,6 +3,23 @@
     border: 1px solid #1f6f45 !important;
     background-color: #1f6f45 !important
   }
+  .board {
+    min-height: 290px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    max-height: 600px
+  }
+  .columns-fixed {
+    height: 100%;
+    white-space: nowrap;
+  }
+  .column {
+    vertical-align: top;
+    height: 100%;
+    display: inline-block;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
 </style>
 
 <!-- Page-Title -->
@@ -35,11 +52,15 @@
               <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                   <div id="external-events" class="m-t-20">
-                    <% @projects.each do |project| %>
-                      <div class="external-event bg-success" data-class="bg-success" style="text-align: center; position: relative;" data-code="<%= project.id %>" data-object="project" data-name="<%= project.name %>">
-                          <i class="fa fa-move"></i><%= project.name %>
+                    <div class="board">
+                      <div class="columns-fixed" id="content-areas">
+                        <% @projects.each do |project| %>
+                          <div class="external-event bg-success" data-class="bg-success" style="text-align: center; position: relative;" data-code="<%= project.id %>" data-object="project" data-name="<%= project.name %>">
+                              <i class="fa fa-move"></i><%= project.name %>
+                          </div>
+                        <% end %>
                       </div>
-                    <% end %>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -58,12 +79,16 @@
               <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                   <div id="external-events" class="m-t-20">
-                    <% @process.each do |p| %>
-                      <div class="external-event bg-custom" data-class="bg-custom" style="text-align: center; position: relative;" data-code="<%= p.id %>" data-object="process" data-name="<%= p.name %>">
-                        <i class="fa fa-move"></i>
-                        <font style="font-size: 11px"><%= p.area.name %></font><br><%= p.name %>
+                    <div class="board">
+                      <div class="columns-fixed" id="content-areas">
+                        <% @process.each do |p| %>
+                          <div class="external-event bg-custom" data-class="bg-custom" style="text-align: center; position: relative;" data-code="<%= p.id %>" data-object="process" data-name="<%= p.name %>">
+                            <i class="fa fa-move"></i>
+                            <font style="font-size: 11px"><%= p.area.name %></font><br><%= p.name %>
+                          </div>
+                        <% end %>
                       </div>
-                    <% end %>
+                    </div>
                   </div>
                 </div>
               </div>
