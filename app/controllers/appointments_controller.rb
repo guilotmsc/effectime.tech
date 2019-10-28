@@ -169,6 +169,7 @@ class AppointmentsController < ApplicationController
                     select 
                       pj_corp.name as pc_id,
                       pd_corp.name as pd_id,
+                      cli_corp.name as pcc_id,
                       pj.name as projeto,
                       pj_area.name as area,
                       pd.name as processo,
@@ -180,6 +181,8 @@ class AppointmentsController < ApplicationController
                     inner join users u on u.id = p.user_id
                     left outer join process_depts pd on pd.id = p.process_dept_id
                     left outer join projects pj on pj.id = p.project_id
+                    left outer join clients on pj.client_id = clients.id
+                    left outer join corporations cli_corp on cli_corp.id = clients.corporation_id
                     left outer join areas pj_area on pj_area.id = pj.area_id
                     left outer join corporations pj_corp on pj.corporation_id = pj_corp.id
                     left outer join areas area_pd on area_pd.id = pd.area_id
