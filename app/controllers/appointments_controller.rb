@@ -185,7 +185,8 @@ class AppointmentsController < ApplicationController
                     left outer join areas area_pd on area_pd.id = pd.area_id
                     left outer join corporations pd_corp on area_pd.corporation_id = pd_corp.id")
     @contracts = Contract.where("corporation_id in (select corporation_id from corporation_users where user_id = #{User.current.id})")
-    @projects = Project.where("corporation_id in (select corporation_id from corporation_users where user_id = #{User.current.id})")
+    @projects = Project.where("corporation_id in (select corporation_id from corporation_users where user_id = #{User.current.id}) or 
+                              (client_id in (select client_id from clients where clients.corporation_id in (select corporation_id from corporation_users where user_id = 2)))")
     @process = ProcessDept.find_by_sql("select process_depts.* from process_depts
                     inner join areas on process_depts.area_id = areas.id
                     where areas.corporation_id in (select corporation_id from corporation_users where user_id = #{User.current.id})")
