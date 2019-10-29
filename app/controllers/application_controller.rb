@@ -6,6 +6,14 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user!, :set_current_user
   # layout :set_layout
 
+  rescue_from CanCan::AccessDenied do |exception|
+    respond_to do |format|
+      format.json { head :forbidden, content_type: 'text/html' }
+      format.html { redirect_to '/home/forbidden', notice: exception.message }
+      format.js   { head :forbidden, content_type: 'text/html' }
+    end
+  end
+
   def set_layout
     if current_user.present?
       cp = Corporation.all.joins(:corporation_users).where("corporations.id = corporation_users.corporation_id and corporation_users.user_id = #{current_user.id}").first

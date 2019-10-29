@@ -1,5 +1,7 @@
 class CorporationsController < ApplicationController
   before_action :set_corporation, only: [:show, :edit, :update, :destroy]
+  load_and_authorize_resource
+  skip_authorize_resource :only => [:get_users_by_corporation, :new]
 
   def get_users_by_corporation
     users = User.find_by_sql("select users.id, users.email, users.created_at, corporation_users.admin,
@@ -7,7 +9,7 @@ class CorporationsController < ApplicationController
                               inner join corporation_users on corporation_users.user_id = users.id
                               where corporation_users.corporation_id = #{params[:corporation_id]}
                               order by users.created_at asc")
-
+    
     return render :json => users
   end
 

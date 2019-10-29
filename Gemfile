@@ -34,6 +34,8 @@ gem 'jbuilder', '~> 2.5'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+gem 'cancancan'
+
 gem 'devise'
 gem 'devise_invitable', '~> 1.7.0'
 

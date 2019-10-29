@@ -50,7 +50,7 @@
           </div>
         </div>
 
-        <div class="left side-menu">
+        <div class="left side-menu" style="height: 105%;">
           <div class="sidebar-inner slimscrollleft">
             <div id="sidebar-menu">
               <ul>
@@ -122,22 +122,19 @@
         </div>
 
            
-        <div class="content-page"> 
+        <div class="content-page">
           <div class="content">
             <div class="container">
               <%= yield %> 
             </div>          
           </div>
-          <footer class="footer text-center">
-            Powered by: Tarcisio Saraiva 2018 ©.
-          </footer> 
         </div>
+
       </div> 
 
     <% else %>
     	<%= yield %>
     <% end %>
-
 
     <script>
         var resizefunc = [];
