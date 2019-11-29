@@ -1,5 +1,7 @@
 class ContractsController < ApplicationController
   before_action :set_contract, only: [:show, :edit, :update, :destroy]
+  load_and_authorize_resource
+  skip_authorize_resource :only => [:new, :create]
 
   # GET /contracts
   # GET /contracts.json

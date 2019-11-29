@@ -1,5 +1,8 @@
 class ProjectsController < ApplicationController
   before_action :set_project, only: [:show, :edit, :update, :destroy]
+  load_and_authorize_resource
+  skip_authorize_resource :only => [:get_clients, :get_corporations, :get_contracts_by_client, 
+                                    :get_areas_by_corporation, :get_areas_by_client, :new, :create]
 
   def get_clients
     @result = Corporation.joins(:corporation_users).where("corporation_users.user_id = #{User.current.id} and corporation_type_id = 1")

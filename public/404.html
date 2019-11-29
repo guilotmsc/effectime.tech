@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="A fully featured admin theme which can be used to build CRM, CMS, etc.">
+        <meta name="author" content="Coderthemes">
+
+        <link rel="shortcut icon" href="assets/images/favicon_1.ico">
+
+        <%= csrf_meta_tags %>
+        <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %> 
+        <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+        <style type="text/css">
+        </style>
+        <script src="../../assets/modernizr.min.js"></script>
+        
+    </head>
+    <body>
+    	
+    	<div class="account-pages"></div>
+		<div class="clearfix"></div>
+		
+        <div class="wrapper-page">
+            <div class="ex-page-content text-center">
+                <div class="text-error"><span class="text-primary">4</span><i class="ti-face-sad text-pink"></i><span class="text-info">3</span></div>
+                <h2>Acesso negado</h2><br>
+                <p class="text-muted">Você não tem autorização para acessar essa página.</p>
+                <br>
+                <%= link_to 'Voltar ao início', appointments_path, class: 'btn btn-default waves-effect waves-light' %>
+            </div>
+        </div>
+
+        
+    	<script>
+            var resizefunc = [];
+        </script>
+	
+	</body>
+</html>

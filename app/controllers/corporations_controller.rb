@@ -1,7 +1,8 @@
 class CorporationsController < ApplicationController
+  class Forbidden < StandardError; end
   before_action :set_corporation, only: [:show, :edit, :update, :destroy]
   load_and_authorize_resource
-  skip_authorize_resource :only => [:get_users_by_corporation, :new]
+  skip_authorize_resource :only => [:get_users_by_corporation, :new, :create]
 
   def get_users_by_corporation
     users = User.find_by_sql("select users.id, users.email, users.created_at, corporation_users.admin,
@@ -22,6 +23,7 @@ class CorporationsController < ApplicationController
   # GET /corporations/1
   # GET /corporations/1.json
   def show
+    raise Forbidden, "You bla bla bla"
   end
 
   # GET /corporations/new
