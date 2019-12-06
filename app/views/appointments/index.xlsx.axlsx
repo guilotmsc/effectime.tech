@@ -14,15 +14,15 @@ wb.styles do |style|
 
     sheet.add_row []
     
-    sheet.add_row ["Unidade de negócio", "Setor", "Processo", "Projeto", "Nome do colaborador", "Data", "Hora de entrada", "Hora de saída", "Saldo de horas"], style: heading
+    sheet.add_row ["Unidade de negócio", "Setor", "Processo", "Projeto", "Cod. projeto", "Cod. contrato", "Nome do colaborador", "Data", "Hora de entrada", "Hora de saída", "Saldo de horas"], style: heading
     
     @appExport.each do |ap|
       if ap.pc_id.present?
-        sheet.add_row [ap.pc_id, ap.area, ap.processo, ap.projeto, ap.usuario, ap.date, ap.inicio, ap.termino, 0]
+        sheet.add_row [ap.pc_id, ap.area, ap.processo, ap.projeto, ap.project_code, ap.contract_code, ap.usuario, ap.date, ap.inicio, ap.termino, 0]
       elsif ap.pd_id.present?
-        sheet.add_row [ap.pd_id, ap.area, ap.processo, ap.projeto, ap.usuario, ap.date, ap.inicio, ap.termino, 0]
+        sheet.add_row [ap.pd_id, ap.area, ap.processo, ap.projeto, ap.project_code, ap.contract_code, ap.usuario, ap.date, ap.inicio, ap.termino, 0]
       else
-        sheet.add_row [ap.pcc_id, ap.area, ap.processo, ap.projeto, ap.usuario, ap.date, ap.inicio, ap.termino, 0]
+        sheet.add_row [ap.pcc_id, ap.area, ap.processo, ap.projeto, ap.project_code, ap.contract_code, ap.usuario, ap.date, ap.inicio, ap.termino, 0]
       end
     end
   end

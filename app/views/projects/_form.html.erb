@@ -57,7 +57,7 @@
             </div>
             <div class="form-group" id="content-contract" hidden="true">
               <span>CONTRATO</span>
-              <%= form.select(:contract_id, Contract.where(id: @project.contract_id).collect {|u| [u.name, u.id]}, {:prompt=>"Nenhum cliente selecionado"}, {class: "form-control select2"}) %>
+              <%= form.select(:contract_id, Contract.where(id: @project.contract_id).collect {|u| ["(#{u.code}) - #{u.name}", u.id]}, {:prompt=>"Nenhum cliente selecionado"}, {class: "form-control select2"}) %>
             </div>
             <div class="form-group">
               <span>ÁREA DO CLIENTE ONDE O PROJETO SERÁ EXECUTADO</span>
@@ -373,7 +373,7 @@
               $(row).appendTo("select[name='project[contract_id]']");
               
               $.each(data, function(i, j) {
-                row = "<option value=\"" + j.id + "\">" + j.name + "</option>";
+                row = "<option value=\"" + j.id + "\">("+j.code+") - " + j.name + "</option>";
                 $(row).appendTo("select[name='project[contract_id]']");
               });
             }
@@ -445,7 +445,7 @@
               $(row).appendTo("select[name='project[contract_id]']");
               
               $.each(data, function(i, j) {
-                row = "<option value=\"" + j.id + "\">" + j.name + "</option>";
+                row = "<option value=\"" + j.id + "\">("+j.code+") - " + j.name + "</option>";
                 $(row).appendTo("select[name='project[contract_id]']");
               });
             }

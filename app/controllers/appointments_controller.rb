@@ -171,6 +171,8 @@ class AppointmentsController < ApplicationController
                       pd_corp.name as pd_id,
                       cli_corp.name as pcc_id,
                       pj.name as projeto,
+                      con.code as contract_code,
+                      pj.code as project_code,
                       pj_area.name as area,
                       pd.name as processo,
                       u.username as usuario,
@@ -181,6 +183,7 @@ class AppointmentsController < ApplicationController
                     inner join users u on u.id = p.user_id
                     left outer join process_depts pd on pd.id = p.process_dept_id
                     left outer join projects pj on pj.id = p.project_id
+                    left outer join contracts con on con.id = pj.contract_id
                     left outer join clients on pj.client_id = clients.id
                     left outer join corporations cli_corp on cli_corp.id = clients.corporation_id
                     left outer join areas pj_area on pj_area.id = pj.area_id

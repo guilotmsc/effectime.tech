@@ -10,6 +10,10 @@ class ContractsController < ApplicationController
     @clients = Client.where("corporation_id in (select corporation_id from corporation_users where user_id = #{User.current.id})").count(:id)
   end
 
+  def name_with_price
+    "#{name} - $#{code}"
+  end
+
   # GET /contracts/1
   # GET /contracts/1.json
   def show
@@ -72,7 +76,7 @@ class ContractsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def contract_params
-      params.require(:contract).permit(:corporation_id, :name, :scope, :contract_type, :signature_date, :attribuition_model, 
+      params.require(:contract).permit(:corporation_id, :name, :code, :scope, :contract_type, :signature_date, :attribuition_model, 
                                         :attribuition_model_day, :attribuition_model_week_day, :attribuition_model_invalid_day, 
                                         :attribuition_model_validate_day, :recurrent_tickets, :hours_volume, :amount_ticket, :tolerance,
                                         :maturity_day, :input_value, :billing_date, :quotas, :quota_amount, :recurrent_amount, 

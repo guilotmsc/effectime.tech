@@ -52,6 +52,12 @@
               </div>
             </div>
             <div class="form-group clearfix">
+              <label class="col-lg-2 control-label">CÓDIGO *</label>
+              <div class="col-lg-10">
+                <%= form.text_field :code, id: :contract_code, class: "form-control", placeholder: "Código do contrato" %> 
+              </div>
+            </div>
+            <div class="form-group clearfix">
               <label class="col-lg-2 control-label">ESCOPO *</label>
               <div class="col-lg-10">
                 <%= form.text_area :scope, id: :contract_scope, class: "form-control", required:true, placeholder: "Escopo" %> 
