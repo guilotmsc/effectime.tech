@@ -448,11 +448,18 @@
               var row = "<option value=\"" + "" + "\">" + "Selecione um contrato" + "</option>";
               $(row).appendTo("select[name='project[contract_id]']");
               
+
               $.each(data, function(i, j) {
+                let code = '#';
+
+                if (j.code !== null && j.code !== '') {
+                  code = j.code;
+                }
+
               	if("<%= @project.contract_id %>" == j.id) {
-              		row = "<option selected='true' value=\"" + j.id + "\">("+j.code+") - " + j.name + "</option>";	
+              		row = "<option selected='true' value=\"" + j.id + "\">("+code+") - " + j.name + "</option>";	
               	} else {
-              		row = "<option value=\"" + j.id + "\">("+j.code+") - " + j.name + "</option>";
+              		row = "<option value=\"" + j.id + "\">(" + code +") - " + j.name + "</option>";
               	}
                 
                 $(row).appendTo("select[name='project[contract_id]']");

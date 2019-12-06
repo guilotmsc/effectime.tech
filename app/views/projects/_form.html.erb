@@ -373,7 +373,13 @@
               $(row).appendTo("select[name='project[contract_id]']");
               
               $.each(data, function(i, j) {
-                row = "<option value=\"" + j.id + "\">("+j.code+") - " + j.name + "</option>";
+                let code = '#';
+
+                if (j.code !== null && j.code !== '') {
+                  code = j.code;
+                }
+
+                row = "<option value=\"" + j.id + "\">("+code+") - " + j.name + "</option>";
                 $(row).appendTo("select[name='project[contract_id]']");
               });
             }
@@ -445,7 +451,13 @@
               $(row).appendTo("select[name='project[contract_id]']");
               
               $.each(data, function(i, j) {
-                row = "<option value=\"" + j.id + "\">("+j.code+") - " + j.name + "</option>";
+                let code = '#';
+
+                if (j.code !== null && j.code !== '') {
+                  code = j.code;
+                }
+
+                row = "<option value=\"" + j.id + "\">("+code+") - " + j.name + "</option>";
                 $(row).appendTo("select[name='project[contract_id]']");
               });
             }
